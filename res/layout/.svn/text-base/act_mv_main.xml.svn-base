@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@id/header"
+        layout="@layout/lay_header" />
+
+    <LinearLayout
+        android:id="@+id/mv_main_linear_lay"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:background="#3E3A39"
+        android:orientation="horizontal"
+         android:paddingBottom="@dimen/_16px_in720p"
+        android:paddingTop="@dimen/_16px_in720p">
+
+        <TextView
+            android:id="@+id/mv_area"
+            style="@style/font_middle_white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:tag="0"
+            android:text="@string/mv_area" />
+
+        <TextView
+            android:id="@+id/mv_genre"
+            style="@style/font_middle_white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:tag="1"
+            android:text="@string/mv_genre" />
+
+        <TextView
+            android:id="@+id/mv_feature"
+            style="@style/font_middle_white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:tag="2"
+            android:text="@string/mv_feature" />
+
+        <TextView
+            android:id="@+id/mv_singer"
+            style="@style/font_middle_white"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:tag="3"
+            android:text="@string/mv_singer" />
+    </LinearLayout>
+
+   <LinearLayout
+        android:id="@+id/lay_cursor"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/mv_main_linear_lay"
+        android:background="#3E3A39" >
+
+        <ImageView
+            android:id="@+id/cursor"
+            android:layout_width="@dimen/_34px_in720p"
+            android:layout_height="@dimen/_4px_in720p"
+            android:background="@color/blue1"
+            android:scaleType="matrix" />
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/mv_vPager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomer"
+        android:layout_below="@+id/lay_cursor"
+        android:layout_centerInParent="true"
+        android:background="#ffffff"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
+
+    <include
+        android:id="@id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+</RelativeLayout>

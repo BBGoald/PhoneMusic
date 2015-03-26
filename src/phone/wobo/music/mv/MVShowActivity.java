@@ -1,0 +1,209 @@
+package phone.wobo.music.mv;
+
+import java.util.List;
+
+import com.lidroid.xutils.BitmapUtils;
+
+import phone.wobo.music.BaseActivity;
+import phone.wobo.music.Config;
+import phone.wobo.music.R;
+import phone.wobo.music.model.MV;
+import phone.wobo.music.model.MVPlayInfo;
+import phone.wobo.music.util.ImageCache;
+import phone.wobo.music.util.PullToRefreshView;
+import phone.wobo.music.util.PullToRefreshView.OnFooterRefreshListener;
+import phone.wobo.music.util.PullToRefreshView.OnHeaderRefreshListener;
+import phone.wobo.music.util.Utils;
+import phone.wobo.music.videoplayer.Video;
+import phone.wobo.music.videoplayer.VideoResource;
+import phone.wobo.music.videoplayer.VideoSet;
+import phone.wobo.music.videoplayer.WoboPlayerActivity;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.TextView;
+
+public class MVShowActivity extends BaseActivity implements
+		OnItemClickListener, OnHeaderRefreshListener, OnFooterRefreshListener {
+	private Context mContext;
+	private String labelName;
+	private String key;
+	private int page = 1;
+	private GridView mv_show_gv;
+	private TextView mv_show_msg;
+	private MVShowAdapter adapter;
+	private String type = "";
+	private int curPageIndex = 1;// 当前页面
+	private final int MV_LOAD_FINISH = 0x1001;
+	private final int ADD_DATA_refreshView = 0x1002;
+	private final int remove_refreshView = 0x1003;
+	private MV newMv;
+//	private FinalBitmap fb;
+	private BitmapUtils fb;
+	private PullToRefreshView pullToRefreshView;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.act_grid);
+		mContext = MVShowActivity.this;
+		initView();
+		Bundle bundle = this.getIntent().getExtras();
+		labelName = bundle.getString("name");
+		key = bundle.getString("key");
+		type = bundle.getString("type");
+
+		if (labelName != null && !labelName.equals("")) {
+			setTitle(labelName);
+		}
+		if (key != null && !key.equals("")) {
+			loading.show();
+			loadData(key, page);
+		}
+	}
+
+	private void initView() {
+		mv_show_gv = (GridView) findViewById(R.id.gv_rank);
+		mv_show_msg = (TextView) findViewById(R.id.msg);
+		pullToRefreshView = (PullToRefreshView) findViewById(R.id.grid_pull_refresh_view);
+		pullToRefreshView.setOnFooterRefreshListener(this);
+		pullToRefreshView.setOnHeaderRefreshListener(this);
+		fb = ImageCache
+				.create(mContext, R.drawable.long_movie_default);
+		adapter = new MVShowAdapter(mContext, fb);
+		mv_show_gv.setAdapter(adapter);
+		mv_show_gv.setOnItemClickListener(this);
+	}
+
+	private void loadData(final String key, final int page) {
+		new Thread() {
+			@Override
+			public void run() {
+				newMv = MVUtil.getMVList(type, key, page);
+				handler.sendEmptyMessage(MV_LOAD_FINISH);
+			}
+		}.start();
+	}
+
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+
+			switch (msg.what) {
+			case MV_LOAD_FINISH:
+				loading.close();
+				refreshView();
+				break;
+			case ADD_DATA_refreshView:
+				addListData();
+				break;
+			case remove_refreshView:
+				pullToRefreshView.refreshComplete();
+				break;
+			}
+		}
+
+	};
+
+	private void refreshView() {
+		if (checkData()) {
+			adapter.setData(newMv.getList());
+		}
+	}
+
+	private void addListData() {
+		if (checkData()) {
+			adapter.addData(newMv.getList());
+		} else {
+			curPageIndex = 1;
+		}
+	}
+
+	private boolean checkData() {
+		if (newMv == null || newMv.getList() == null
+				|| newMv.getList().size() == 0) {
+			mv_show_msg.setVisibility(View.VISIBLE);
+			pullToRefreshView.setVisibility(View.GONE);
+			handler.sendEmptyMessage(remove_refreshView);
+			if (isCloseNetwork()) {
+				mv_show_msg.setText(getResources().getString(
+						R.string.network_connection_is_close));
+			} else {
+				mv_show_msg.setText("暂无数据");
+			}
+			return false;
+		}
+		if (newMv.isNextpage()) {
+			pullToRefreshView.setMoreData(true);
+		} else {
+			pullToRefreshView.setMoreData(false);
+		}
+		mv_show_msg.setVisibility(View.GONE);
+		pullToRefreshView.setVisibility(View.VISIBLE);
+		handler.sendEmptyMessage(remove_refreshView);
+		return true;
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		play(position);
+	}
+
+	private void play(int location) {
+		VideoSet videoSet = new VideoSet();
+		videoSet.setCurrentLocation(location);
+		videoSet.setDefinition(Config.VIDEO_RES_SC);
+		videoSet.setName("");
+		videoSet.setPosterUrl("");
+		List<MVPlayInfo> playList = adapter.getMVPlayInfoList();
+		int playListSize = playList.size();
+		for (int l = 0; l < playListSize; l++) {
+			Video video = new Video();
+			VideoResource videoResource = new VideoResource();
+			videoResource.setResourceValue("");
+			videoResource.setUrl(playList.get(l).getUrl());
+			videoResource.setVid(-1);
+			video.addResource(videoResource);
+			video.setVideoName(playList.get(l).getName());
+			video.setMid(-1);
+			video.setCurrentResource(videoResource);
+			videoSet.AddVideo(video);
+		}
+		String json = Utils.toJson(videoSet);
+		Intent intent = new Intent();
+		intent.setClass(this, WoboPlayerActivity.class);
+		intent.putExtra(WoboPlayerActivity.VIDEO_JSON_KEY, json);
+		startActivity(intent);
+	}
+
+	@Override
+	public void onFooterRefresh(PullToRefreshView view) {
+		if (newMv.isNextpage()) {
+			curPageIndex += 1;
+			new Thread(new Runnable() {
+
+				@Override
+				public void run() {
+					newMv = MVUtil.getMVList(type, key, curPageIndex);
+					handler.sendEmptyMessage(ADD_DATA_refreshView);
+				}
+			}).start();
+		} else {
+			handler.sendEmptyMessage(remove_refreshView);
+		}
+	}
+
+	@Override
+	public void onHeaderRefresh(PullToRefreshView view) {
+		curPageIndex = 1;
+		loadData(key, curPageIndex);
+	}
+
+}

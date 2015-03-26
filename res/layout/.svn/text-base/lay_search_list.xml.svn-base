@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <RelativeLayout
+        android:id="@+id/lay_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/_50px_in720p"
+        android:background="#F4F4F4" >
+
+        <TextView
+            android:id="@+id/result"
+            style="@style/font_small_gray"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingLeft="@dimen/_16px_in720p"
+            android:text="匹配结果" />
+    </RelativeLayout>
+
+    <phone.wobo.music.util.PullToRefreshView
+        android:id="@+id/main_pull_refresh_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/lay_msg"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ListView
+            android:id="@+id/ls_song"
+            style="@style/listview_style1" />
+    </phone.wobo.music.util.PullToRefreshView>
+
+    <TextView
+        android:id="@+id/msg"
+        style="@style/font_middle_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="正在努力加载数据。。。"
+        android:visibility="gone" />
+
+</RelativeLayout>

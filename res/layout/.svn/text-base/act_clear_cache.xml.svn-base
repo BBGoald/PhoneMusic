@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    >
+
+    <TextView 
+        android:id="@+id/setting_cache_title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/font_middle_black"
+        android:text="清除缓存"
+        />
+    
+    <TextView 
+        android:id="@+id/setting_cache_msg"
+        android:layout_below="@+id/setting_cache_title"
+        android:layout_alignLeft="@+id/setting_cache_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="40dp"
+        android:paddingBottom="40dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        style="@style/font_middle_black"
+        android:singleLine="false"
+        />
+    
+    <LinearLayout 
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/gray"
+        >
+        <TextView 
+            android:id="@+id/setting_cache_cancle"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:gravity="center_horizontal"
+            style="@style/font_big_black"
+            android:layout_margin="1dp"
+            android:background="@color/white"
+            android:text="取消"
+            />
+        <TextView
+            android:id="@+id/setting_cache_ok"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:gravity="center_horizontal"
+            style="@style/font_big_black"
+            android:layout_margin="1dp"
+            android:background="@color/white"
+            android:text="确定清除"
+            />
+        
+    </LinearLayout>
+
+</RelativeLayout>

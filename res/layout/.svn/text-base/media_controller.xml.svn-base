@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <SeekBar
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:max="100"
+        android:maxHeight="10dp"
+        android:minHeight="10dp"
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:progress="0"
+        android:progressDrawable="@drawable/media_controller_progress"
+        android:tag="seekbar"
+        android:thumb="@drawable/media_controller_thumb" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:tag="position"
+            android:text="0:00"
+            android:textColor="#FF00a0e9"
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=" / "
+            android:textSize="25sp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:tag="duration"
+            android:textSize="25sp" />
+
+        <LinearLayout
+            android:id="@+id/btnlayouts"
+            android:layout_width="400dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|center_horizontal"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/btn_pre"
+                style="@style/mediaplayer_control_bar_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_selector2"
+                android:contentDescription="@android:string/cancel"
+                android:src="@drawable/btn_pre" />
+
+            <ImageButton
+                android:id="@+id/btn_play"
+                style="@style/mediaplayer_control_bar_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_selector2"
+                android:contentDescription="@android:string/cancel"
+                android:src="@drawable/btn_play" />
+
+            <ImageButton
+                android:id="@+id/btn_next"
+                style="@style/mediaplayer_control_bar_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_selector2"
+                android:contentDescription="@android:string/cancel"
+                android:src="@drawable/btn_next" />
+
+            <ImageButton
+                android:id="@+id/btn_list"
+                style="@style/mediaplayer_control_bar_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_selector2"
+                android:contentDescription="@android:string/cancel"
+                android:src="@drawable/btn_player_list" />
+
+            <ImageButton
+                android:id="@+id/btn_setting"
+                style="@style/mediaplayer_control_bar_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/btn_selector2"
+                android:contentDescription="@android:string/cancel"
+                android:src="@drawable/setting_07"
+                android:visibility="gone" />
+        </LinearLayout>
+    </LinearLayout>
+
+</merge>

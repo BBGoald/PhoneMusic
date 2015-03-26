@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+       <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/_8px_in720p"
+        android:paddingTop="@dimen/_8px_in720p" >
+
+        <LinearLayout
+            android:id="@+id/lay_play"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="25"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/local_song_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                 style="@style/font_middle_black"/>
+
+            <TextView
+                android:id="@+id/local_singer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/font_small_gray" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="5"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/btn_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/btn_selector2"
+                android:padding="@dimen/_16px_in720p"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_more" />
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/local_more"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/btn_add_play_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_play_line" />
+
+        <Button
+            android:id="@+id/btn_song_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/song_info" />
+
+        <Button
+            android:id="@+id/btn_delete_song"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/delete_song" />
+    </LinearLayout>
+
+</LinearLayout>
+

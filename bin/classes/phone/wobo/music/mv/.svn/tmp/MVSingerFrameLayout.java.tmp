@@ -1,0 +1,165 @@
+package phone.wobo.music.mv;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import com.lidroid.xutils.BitmapUtils;
+
+import phone.wobo.music.R;
+import phone.wobo.music.bll.MVHelper;
+import phone.wobo.music.bll.OnlineLogic;
+import phone.wobo.music.model.MV;
+import phone.wobo.music.model.MVLabel;
+import phone.wobo.music.online.SimpleFrameLayout;
+import phone.wobo.music.util.ImageCache;
+import phone.wobo.music.util.LoadingDialog;
+import phone.wobo.music.util.SharedFileHelper;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.FrameLayout;
+import android.widget.GridView;
+import android.widget.TextView;
+
+public class MVSingerFrameLayout extends SimpleFrameLayout implements
+		OnItemClickListener {
+
+	private Context mContext;
+	private final static int MV_SINGER_FINISH = 4;
+	private final int MV_LOAD_FINISH = 2;
+	private List<MVLabel> list;
+	private GridView gv_type, gv_mv;
+	private BitmapUtils fb;
+	private MVGridAdapter adapter;
+	private TextView txt_msg;
+	private MVShowAdapter mvAdapter;
+	private MV mv;
+
+	public MVSingerFrameLayout(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		this.mContext = context;
+	}
+
+	public MVSingerFrameLayout(Context context) {
+		this(context, null);
+		this.mContext = context;
+		LayoutInflater inflater = (LayoutInflater) mContext
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View view = inflater.inflate(R.layout.lay_mv_grid, this);
+		list = new ArrayList<MVLabel>();
+		fb = ImageCache
+				.create(mContext, R.drawable.long_movie_default);
+		loading.show();
+		initView(view);
+		loadType();
+		loadMV();
+	}
+
+	private void loadType() {
+		new Thread() {
+			@Override
+			public void run() {
+				String json = SharedFileHelper.getPreference(mContext,
+						MVUtil.MV_Name, MVUtil.MV_Singer_Key);
+				if (json == null || json.equals("")) {
+					json = MVUtil.loadLabelData("singer");
+				}
+				list = MVUtil.getMvLabelList(json);
+				handler.sendEmptyMessage(MV_SINGER_FINISH);
+				MVUtil.updateMVCache(mContext, MVUtil.MV_Singer_Key,
+						MVUtil.loadLabelData("singer"));
+			}
+		}.start();
+	}
+
+	// 取流派的mv
+	private void loadMV() {
+		new Thread() {
+			@Override
+			public void run() {
+				String json = SharedFileHelper.getPreference(mContext,
+						MVUtil.MV_Name, MVUtil.MV_Type_Key);
+				if (json == null || json.equals("")) {
+					json = MVUtil.loadLabelData("type");
+				}
+				List<MVLabel> genreType_list = MVUtil.getMvLabelList(json);
+				if (genreType_list != null && genreType_list.size() > 0) {
+					int num=genreType_list.size()/2;
+					mv = MVUtil.getMVList("version", ""+genreType_list.get(num).getId(), 1, 20);
+					handler.sendEmptyMessage(MV_LOAD_FINISH);
+				}
+			}
+		}.start();
+	}
+
+	private Handler handler = new Handler() {
+		@Override
+		public void handleMessage(Message msg) {
+			if (msg.what == MV_SINGER_FINISH) {
+				loading.close();
+				refreshSingerView();
+			}else if (msg.what == MV_LOAD_FINISH) {
+				if (MVHelper.isExistMVData(mContext, mv, txt_msg)) {
+					mvAdapter.setData(mv.getList());
+				}
+			}
+		}
+
+	};
+
+	private void refreshSingerView() {
+		if (list == null || list.size() == 0) {
+			if (OnlineLogic.isCloseNetwork(mContext)) {
+				txt_msg.setText(mContext.getResources().getString(
+						R.string.network_connection_is_close));
+			} else {
+				txt_msg.setText(mContext.getResources().getString(
+						R.string.data_load_failure));
+			}
+			txt_msg.setVisibility(View.VISIBLE);
+			gv_type.setVisibility(View.GONE);
+			return;
+		}
+		txt_msg.setVisibility(View.GONE);
+		gv_type.setVisibility(View.VISIBLE);
+		adapter.setData(list);
+	}
+
+	private void initView(View view) {
+		gv_type = (GridView) view.findViewById(R.id.gv_type);
+		txt_msg = (TextView) view.findViewById(R.id.msg);
+		adapter = new MVGridAdapter(mContext, fb);
+		gv_type.setAdapter(adapter);
+		gv_type.setOnItemClickListener(this);
+		gv_type.setNumColumns(4);
+		gv_mv = (GridView) view.findViewById(R.id.gv_mv);
+		mvAdapter = new MVShowAdapter(mContext, fb);
+		gv_mv.setAdapter(mvAdapter);
+		gv_mv.setOnItemClickListener(this);
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {		
+		if (parent.getId() == R.id.gv_type) {
+			MVLabel label = list.get(position);
+			if (label == null)
+				return;
+			Intent intent = new Intent();
+			intent.setClass(mContext, SingerListActivity.class);
+			intent.putExtra("key", "" + label.getId());
+			intent.putExtra("name", label.getName());
+			intent.putExtra("type", "singertype");
+			mContext.startActivity(intent);		
+		} else if (parent.getId() == R.id.gv_mv) {	
+			MVHelper.playMV(mContext, position, mvAdapter.getMVPlayInfoList());
+		}
+	}
+
+}

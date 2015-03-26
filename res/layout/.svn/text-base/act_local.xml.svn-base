@@ -1,0 +1,175 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@id/header"
+        layout="@layout/lay_header" />
+
+    <RelativeLayout
+        android:id="@+id/currentCheckNumber"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100px_in720p"
+        android:layout_below="@+id/header"
+        android:gravity="center_vertical" >
+
+        <RelativeLayout
+            android:id="@+id/lay_check_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/local_song_num"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/_32px_in720p"/>
+
+            <ImageButton
+                android:id="@+id/local_scan"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_60px_in720p"
+                android:layout_marginRight="@dimen/_30px_in720p"
+                android:layout_toLeftOf="@+id/btn_song_editor"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/_8px_in720p"
+                android:background="@drawable/btn_selector2"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_scan"/>
+
+            <ImageButton
+                android:id="@+id/btn_song_editor"
+                android:layout_width="@dimen/_84px_in720p"
+                android:layout_height="@dimen/_84px_in720p"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/_16px_in720p"
+                android:background="@drawable/btn_selector2"
+                 android:layout_centerVertical="true"
+                android:padding="@dimen/_24px_in720p"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_editor" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/img_check_all"
+                android:layout_width="@dimen/_54px_in720p"
+                android:layout_height="@dimen/_54px_in720p"
+                 android:layout_marginLeft="@dimen/_16px_in720p"
+                android:layout_alignParentLeft="true"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:background="@null"
+                android:src="@drawable/btn_uncheck" 
+                android:padding="@dimen/_8px_in720p"
+                android:scaleType="fitCenter"/>
+
+            <TextView
+                android:id="@+id/txt_check_all"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_check_all"
+                android:paddingLeft="@dimen/_20px_in720p"
+                android:text="全选" />
+
+            <TextView
+                android:id="@+id/txt_check_number"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/txt_check_all"
+                android:paddingLeft="@dimen/_20px_in720p"
+                android:text="已选取12首" />
+
+            <TextView
+                android:id="@+id/txt_cancel_editor"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/_16px_in720p"
+                android:text="取消" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_3px_in720p"
+        android:layout_below="@+id/currentCheckNumber"
+        android:background="@color/gray1" />
+
+    <ListView
+        android:id="@+id/ls_song"
+        style="@style/listview_style1"
+        android:layout_above="@+id/bottomer"
+        android:layout_below="@+id/line" />
+
+    <ImageView 
+        android:id="@+id/bg_img"
+       android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/bg_no_data"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_400px_in720p"
+        android:visibility="gone" 
+        />
+     
+    <TextView
+        android:id="@+id/msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/bg_img"
+        android:textColor="@color/gray"
+        android:textSize="@dimen/_30px_in720p"
+        android:paddingTop="@dimen/_50px_in720p"
+        android:text="暂无数据"
+        android:visibility="gone" />
+
+    <include
+        android:id="@id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+    <LinearLayout
+        android:id="@+id/expandable_editor"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/_150px_in720p"
+        android:layout_alignParentBottom="true"
+        android:background="#3E3A39"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/btn_delete"
+            style="@style/font_small_white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_selector2"
+            android:drawableTop="@drawable/btn_delete"
+            android:gravity="center"
+            android:padding="@dimen/_8px_in720p"
+            android:drawablePadding="@dimen/_8px_in720p"
+            android:text="删除" />
+    </LinearLayout>
+
+</RelativeLayout>

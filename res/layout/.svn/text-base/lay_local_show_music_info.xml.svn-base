@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+	<!-- 歌曲详情对话框 -->
+    <TextView 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/local_show_music_info_dialog_title"
+        android:gravity="center"
+        />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <!-- 歌手 -->
+        <TextView 
+            android:id="@+id/tv_local_show_musicinfo_artist_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/local_artist"
+            />
+        
+        <TextView 
+            android:id="@+id/tv_local_show_musicinfo_artist_r"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+    </LinearLayout>
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <!-- 歌曲 -->
+        <TextView 
+            android:id="@+id/tv_local_show_musicinfo_songname_l"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/local_songname"
+            />
+        
+        <TextView 
+            android:id="@+id/tv_local_show_musicinfo_songname_r"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            />
+        
+    </LinearLayout>
+        
+        
+	    
+	<LinearLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:orientation="horizontal"
+	    >
+	    <Button 
+	        android:id="@+id/tv_local_show_musicinfo_confirm"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/local_confirm"
+	        />
+	    
+	    <Button 
+	        android:id="@+id/tv_local_show_musicinfo_cancel"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_weight="1"
+	        android:text="@string/local_cancel"
+	        />
+	</LinearLayout>
+    
+</LinearLayout>

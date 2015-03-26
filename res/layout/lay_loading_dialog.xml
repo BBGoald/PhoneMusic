@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+     <ProgressBar
+        android:id="@+id/pull_to_refresh_progress"
+        style="?android:attr/progressBarStyleSmallInverse"      
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_44px_in720p"
+        android:layout_marginRight="@dimen/_34px_in720p"
+        android:layout_marginTop="@dimen/_16px_in720p"
+        android:layout_marginBottom="@dimen/_16px_in720p"
+        android:indeterminate="true"/>
+<TextView 
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+     style="@style/font_middle_black"
+    android:text="正在努力为您加载。。。"/>
+</LinearLayout>

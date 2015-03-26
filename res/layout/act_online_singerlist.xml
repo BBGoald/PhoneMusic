@@ -1,0 +1,55 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/layout_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/lay_header" />
+
+    <phone.wobo.music.util.PullToRefreshView
+        android:id="@+id/listview_pull_refresh_view"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottomer"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/header"
+        android:layout_toLeftOf="@+id/lay_letter"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ListView
+            android:id="@+id/ls_song"
+            style="@style/listview_style1"
+            android:layout_marginLeft="@dimen/_16px_in720p"
+            />
+    </phone.wobo.music.util.PullToRefreshView>
+
+    <phone.wobo.music.util.LetterLayout
+        android:id="@+id/lay_letter"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottomer"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/header"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:scrollbars="none" />
+
+    <TextView
+        android:id="@+id/msg"
+        style="@style/font_middle_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+</RelativeLayout>

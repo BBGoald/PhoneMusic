@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/layout_background"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@id/header"
+        layout="@layout/lay_header" />
+
+    <phone.wobo.music.util.PullToRefreshView
+        android:id="@+id/grid_pull_refresh_view"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_above="@+id/bottomer"
+        android:layout_below="@+id/header"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <GridView
+            android:id="@+id/gv_rank"
+            style="@style/gridview_style2" 
+            android:numColumns="@integer/grid_clums" />
+    </phone.wobo.music.util.PullToRefreshView>
+
+    <TextView
+        android:id="@+id/msg"
+        style="@style/font_middle_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <include
+        android:id="@id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+</RelativeLayout>

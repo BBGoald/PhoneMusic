@@ -1,0 +1,90 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:paddingBottom="@dimen/_24px_in720p">
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/lay_header" />
+
+    <ImageView
+        android:id="@+id/iv_info_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/_44px_in720p"
+        android:src="@drawable/about_03" />
+
+    <TextView
+        android:id="@+id/textView_introduce"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_check_update"
+        android:layout_below="@+id/iv_info_logo"
+        android:layout_marginTop="@dimen/_44px_in720p"
+        android:singleLine="false"
+        android:layout_marginRight="@dimen/_24px_in720p"
+        android:text="@string/txt_about_introduce"
+        style="@style/font_middle_gray"/>
+
+    <TextView
+        android:id="@+id/textView_qq"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_introduce"
+        android:layout_below="@+id/textView_introduce"
+        android:layout_marginTop="@dimen/_34px_in720p"
+        android:text="@string/txt_wobo_bbs"
+        style="@style/font_middle_black" />
+
+    <TextView
+        android:id="@+id/textView_bbs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_qq"
+        android:layout_below="@+id/textView_qq"
+        android:text="@string/txt_wobo_qq"
+        style="@style/font_middle_black"/>
+
+
+    <TextView
+        android:id="@+id/about_wechat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_check_update"
+        android:layout_below="@+id/textView_bbs"
+        style="@style/font_middle_black"
+        android:text="@string/about_wechat" />
+    
+    <TextView
+        android:id="@+id/about_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/btn_check_update"
+        android:layout_below="@+id/about_wechat"
+        style="@style/font_middle_black"
+        android:text="@string/txt_wobo_version" />
+    
+    
+    <Button
+        android:id="@+id/btn_check_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/about_version"
+        android:layout_marginTop="@dimen/_44px_in720p"
+        android:layout_marginLeft="@dimen/_44px_in720p"
+        android:layout_marginRight="@dimen/_44px_in720p"
+        android:background="@drawable/round_layout"
+        android:text="@string/btn_check_update"
+        android:textColor="@color/white"
+        android:gravity="center"
+        style="@style/font_big_black"
+        android:padding="@dimen/_8px_in720p"
+        />
+
+</RelativeLayout>
+
+

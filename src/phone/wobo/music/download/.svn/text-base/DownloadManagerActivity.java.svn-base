@@ -1,0 +1,424 @@
+package phone.wobo.music.download;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import phone.wobo.music.BaseActivity;
+import phone.wobo.music.R;
+import phone.wobo.music.bll.DatabaseHelper;
+import phone.wobo.music.favorites.FavoritesSongActivity;
+import phone.wobo.music.model.MusicInfo;
+import phone.wobo.music.setting.WoboDialog;
+import phone.wobo.music.util.FuncUtils;
+
+public class DownloadManagerActivity extends BaseActivity implements
+		OnClickListener {
+
+	private ListView listView;
+	private DatabaseHelper downloadDatabaseHelper;
+	public static final String ACTION = "tv.wobo.music.download.DownloadManagerActivity.SENDBROADCAST";
+	private final int EVENT_REFRESH_VIEW = 0x1001;
+	private final int EVENT_REFRESH_LISTVIEW = 0x1002;
+	private List<MusicInfo> downloadAllList = new ArrayList<MusicInfo>();
+	private List<MusicInfo> downloadSuccessList = new ArrayList<MusicInfo>();
+	private DownloadAdapter adapter;
+	private ImageView img_check_all,bg_img;
+	private boolean currentIsSelectAll = false;
+	private Button btn_delete;
+	private int currentCheckNumber = 0;
+	private View lay_bottom_player;
+	private RelativeLayout lay_check_editor, lay_editor;
+	private LinearLayout expandable_editor;
+	private TextView txt_msg, txt_cancel_editor;
+	private ImageButton btn_song_editor;
+	private boolean isSelected = false;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.act_download_list);
+		downloadDatabaseHelper = DatabaseHelper.instance(this);
+		initView();
+	}
+
+	private void initView() {
+		txt_msg = (TextView) findViewById(R.id.txt_msg);
+		bg_img = (ImageView)findViewById(R.id.bg_img);
+		listView = (ListView) findViewById(R.id.download_lsit);
+		txt_cancel_editor = (TextView) findViewById(R.id.txt_cancel_editor);
+		txt_cancel_editor.setOnClickListener(this);
+		img_check_all = (ImageView) findViewById(R.id.img_check_all);
+		img_check_all.setOnClickListener(this);
+		btn_delete = (Button) findViewById(R.id.btn_delete);
+		btn_delete.setOnClickListener(this);
+		btn_song_editor = (ImageButton) findViewById(R.id.btn_song_editor);
+		btn_song_editor.setOnClickListener(this);
+		lay_bottom_player = (View) findViewById(R.id.bottomer);
+		lay_check_editor = (RelativeLayout) findViewById(R.id.lay_check_editor);
+		lay_editor = (RelativeLayout) findViewById(R.id.lay_editor);
+		expandable_editor = (LinearLayout) findViewById(R.id.expandable_editor);
+		adapter = new DownloadAdapter(this) {
+
+			@Override
+			protected void deleteMusic(int position, View v) {
+				List<MusicInfo> info = getData();
+				deleteDownloadMusic(info, position);
+			}
+
+			@Override
+			protected void add2List(View view, int position) {
+				List<MusicInfo> listMusic = adapter.getData();
+				if (isExistMusic(listMusic)) {
+					FuncUtils.beginClickAnimation(DownloadManagerActivity.this,
+							view, phone.wobo.music.R.drawable.ic_anim_add);
+					add2PlayList(listMusic.get(position));
+				}
+			}
+
+			@Override
+			protected void play(View view, int position) {
+				super.play(view, position);
+				playMusic(view, position);
+			}
+
+			@Override
+			protected void addCheck(boolean isAdd) {
+				if (isAdd) {
+					currentCheckNumber++;
+				} else {
+					currentCheckNumber--;
+				}
+				if (currentCheckNumber < downloadAllList.size()) {
+					img_check_all.setImageResource(R.drawable.btn_uncheck);
+				} else {
+					img_check_all.setImageResource(R.drawable.btn_check);
+				}
+				((TextView) findViewById(R.id.txt_check_number))
+						.setText(String.format(
+								getResources().getString(
+										R.string.txt_check_number),
+								currentCheckNumber));
+			}
+
+		};
+		listView.setAdapter(adapter);
+		setTitle("下载管理");
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		initBroadcast();
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		loadData();
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		try {
+			unregisterReceiver(myReceiver);
+		} catch (Exception e) {
+			e.printStackTrace();
+			Log.d("DownloadManagerActivity", "注销广播出现异常!");
+		}
+	}
+
+	private void initBroadcast() {
+		IntentFilter filter = new IntentFilter();
+		filter.addAction(ACTION);
+		filter.setPriority(Integer.MAX_VALUE);
+		registerReceiver(myReceiver, filter);
+	}
+
+	private BroadcastReceiver myReceiver = new BroadcastReceiver() {
+		@Override
+		public void onReceive(Context context, Intent intent) {
+			refrshData();
+		}
+
+	};
+
+	private void refrshData() {
+		new Thread() {
+			public void run() {
+				downloadAllList = downloadDatabaseHelper.getDownloadList();
+				downloadSuccessList = downloadDatabaseHelper
+						.getDownloadSuccessList();
+				handler.sendEmptyMessage(EVENT_REFRESH_LISTVIEW);
+			};
+		}.start();
+	}
+	private void refrshListView() {
+		adapter.setData(downloadAllList);
+	}
+	
+	private Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			if (msg.what == EVENT_REFRESH_VIEW) {
+				refrshView();
+			}else if (msg.what == EVENT_REFRESH_LISTVIEW) {
+				refrshListView();
+			}
+			return false;
+		}
+	});
+
+	private void refrshView() {
+		if (downloadAllList != null && downloadAllList.size() > 0) {
+			adapter.setData(downloadAllList);
+			((TextView) findViewById(R.id.txt_song_total)).setText(String.format(
+					getResources().getString(R.string.txt_total_number),
+					downloadAllList.size()));
+			txt_msg.setVisibility(View.GONE);
+			bg_img.setVisibility(View.GONE);
+			lay_check_editor.setVisibility(View.VISIBLE);
+			listView.setVisibility(View.VISIBLE);
+		} else {
+			txt_msg.setText("暂时没有任何数据");
+			txt_msg.setVisibility(View.VISIBLE);
+			bg_img.setVisibility(View.VISIBLE);
+			lay_bottom_player.setVisibility(View.VISIBLE);
+			lay_check_editor.setVisibility(View.GONE);
+			((TextView) findViewById(R.id.line)).setVisibility(View.GONE);
+			lay_editor.setVisibility(View.GONE);
+			expandable_editor.setVisibility(View.GONE);
+			listView.setVisibility(View.GONE);
+		}
+
+	}
+
+	private void loadData() {
+		new Thread() {
+			public void run() {
+				downloadAllList = downloadDatabaseHelper.getDownloadList();
+				downloadSuccessList = downloadDatabaseHelper
+						.getDownloadSuccessList();
+				handler.sendEmptyMessage(EVENT_REFRESH_VIEW);
+			};
+		}.start();
+	}
+
+	// 删除下载的本地音乐
+	private void deleteDownloadMusic(final List<MusicInfo> playList,
+			final int position) {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					File file = new File(playList.get(position).getPath());
+					file.delete();
+					downloadDatabaseHelper.deleteDownload(playList
+							.get(position).getPluginPath());
+				} catch (Exception e) {
+					e.printStackTrace();
+					FuncUtils.makeText(getApplicationContext(), "删除出现异常");
+
+				}
+				loadData();
+			}
+		}).start();
+
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+	}
+
+	public void playMusic(View view, int position) {
+		MusicInfo selectInfo = adapter.getData().get(position);
+		try {
+			if (downloadDatabaseHelper.songDownloadSuccess(selectInfo
+					.getPluginPath())) {
+				if (fileIsExist(selectInfo.getPath())) {
+					String pluginPath = selectInfo.getPluginPath();
+					for (int i = 0; i < downloadSuccessList.size(); i++) {
+						if (pluginPath.equals(downloadSuccessList.get(i)
+								.getPluginPath())) {
+							FuncUtils.beginClickAnimation(
+									DownloadManagerActivity.this, view,
+									phone.wobo.music.R.drawable.ic_anim_music);
+							playMusic(downloadSuccessList, i);
+							break;
+						}
+					}
+				} else {
+					FuncUtils.makeText(getApplicationContext(),
+							"该歌曲已经在本地删除，您需要在管理界面删除后重新下载");
+
+				}
+			} else {
+				FuncUtils.makeText(getApplicationContext(), "该歌曲未下载成功");
+
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	private boolean fileIsExist(String musicPath) {
+		File f = new File(musicPath);
+		if (f.exists()) {
+			return true;
+		}
+		return false;
+	}
+
+	@Override
+	public void onClick(View v) {
+		switch (v.getId()) {
+		case R.id.img_check_all:
+			checkAll(v);
+			break;
+		case R.id.btn_delete:
+			deleteHistory();
+			break;
+		case R.id.btn_song_editor:
+			checkEditor(v);
+			break;
+		case R.id.txt_cancel_editor:
+			cancelEditor();
+			break;
+		default:
+			break;
+		}
+	}
+
+	private void checkEditor(View v) {
+		currentCheckNumber = 0;
+		((TextView) findViewById(R.id.txt_check_number)).setText(String.format(
+				getResources().getString(R.string.txt_check_number), 0));
+		lay_bottom_player.setVisibility(View.GONE);
+		expandable_editor.setVisibility(View.VISIBLE);
+		lay_check_editor.setVisibility(View.GONE);
+		lay_editor.setVisibility(View.VISIBLE);
+		img_check_all.setImageResource(R.drawable.btn_uncheck);
+		adapter.setEditor(true);
+	}
+
+	private void cancelEditor() {
+		currentCheckNumber = 0;
+		lay_bottom_player.setVisibility(View.VISIBLE);
+		expandable_editor.setVisibility(View.GONE);
+		lay_check_editor.setVisibility(View.VISIBLE);
+		lay_editor.setVisibility(View.GONE);
+		adapter.setEditor(false);
+		currentIsSelectAll = false;
+	}
+
+	private void checkAll(View v) {
+		if (currentCheckNumber == downloadAllList.size()) {
+			adapter.selectAll(false);
+			((ImageView) v).setImageResource(R.drawable.btn_uncheck);
+			currentCheckNumber = 0;
+			((TextView) findViewById(R.id.txt_check_number))
+					.setText(String
+							.format(getResources().getString(
+									R.string.txt_check_number),
+									currentCheckNumber));
+		} else {
+			adapter.selectAll(true);
+			((ImageView) v).setImageResource(R.drawable.btn_check);
+			currentCheckNumber = downloadAllList.size();
+			((TextView) findViewById(R.id.txt_check_number))
+					.setText(String
+							.format(getResources().getString(
+									R.string.txt_check_number),
+									currentCheckNumber));
+		}
+		currentIsSelectAll = !currentIsSelectAll;
+	}
+	
+	private void deleteHistory() {
+		if (currentCheckNumber > 0) {
+			
+			new WoboDialog(this, "删除下载歌曲", "确定要删除歌曲吗？")
+			{
+				@Override
+				public void setCheckBoxVisibility(boolean visibility)
+				{
+					super.setCheckBoxVisibility(true);
+				}
+
+				@Override
+				public void setOnPositiveListener()
+				{
+					List<MusicInfo> deleteList = adapter
+							.getData();
+					for (int i = 0; i < deleteList.size(); i++) {
+						if (deleteList.get(i).isSelected()) {
+							if (isSelected) {
+								File file = new File(deleteList
+										.get(i).getPath());
+								file.delete();
+							}
+
+							downloadDatabaseHelper
+									.deleteDownload(deleteList
+											.get(i)
+											.getPluginPath());
+						}
+					}
+					cancelEditor();
+					loadData();
+					isSelected = false;
+					dismiss();
+				}
+
+				@Override
+				public void setOnNegativeListener()
+				{
+					super.setOnNegativeListener();
+					isSelected = false;
+					dismiss();
+				}
+
+
+				@Override
+				public void OnCheckBoxListener(boolean isChecked)
+				{
+					isSelected = isChecked;
+				}
+
+				@Override
+				public void dismiss()
+				{
+					super.dismiss();
+				}
+				
+				
+			}.show();
+			
+		} else {
+			showToast("请选择要删除的歌曲");
+		}
+
+	}
+}

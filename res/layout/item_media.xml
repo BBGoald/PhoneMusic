@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="50dp"
+    android:gravity="center_vertical" 
+    android:descendantFocusability="blocksDescendants"
+    android:orientation="horizontal"
+    android:paddingLeft="@dimen/_8px_in720p"
+    android:paddingRight="@dimen/_24px_in720p" >
+    <ImageView 
+        android:id="@+id/play"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" 
+        android:src="@drawable/media_playing" /> 
+    <TextView
+        android:id="@+id/media"
+         style="@style/font_middle_white"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_marginLeft="@dimen/_8px_in720p"       
+        android:ellipsize="marquee"
+        android:focusable="true"     
+        android:marqueeRepeatLimit="marquee_forever"
+    />   
+</LinearLayout>

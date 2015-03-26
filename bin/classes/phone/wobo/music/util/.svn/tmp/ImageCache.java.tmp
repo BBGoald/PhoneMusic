@@ -1,0 +1,93 @@
+package phone.wobo.music.util;
+
+import java.io.File;
+
+import com.lidroid.xutils.BitmapUtils;
+import com.lidroid.xutils.bitmap.BitmapCommonUtils;
+import com.lidroid.xutils.bitmap.BitmapDisplayConfig;
+import com.lidroid.xutils.bitmap.factory.BitmapFactory;
+
+import android.content.Context;
+import android.graphics.Bitmap.Config;
+import android.os.Environment;
+
+public class ImageCache {
+	public static String cachePath = Environment.getExternalStorageDirectory()
+			.getPath() + "/wobo/cache/";
+	Context mContext;
+	private static int cacheSize = 1024 * 1024 * 200;
+	private static BitmapUtils bitmapUtils;
+	private static BitmapDisplayConfig bigPicDisplayConfig;
+
+	public static BitmapUtils create(Context appContext, int defImageId) {
+		File f = new File(cachePath);
+		if (!f.exists()) {
+			f.mkdirs();
+		}
+		bigPicDisplayConfig = new BitmapDisplayConfig();
+		bigPicDisplayConfig
+				.setBitmapConfig(android.graphics.Bitmap.Config.ARGB_8888);
+		bigPicDisplayConfig.setBitmapMaxSize(BitmapCommonUtils
+				.getScreenSize(appContext));
+		bigPicDisplayConfig.setLoadingDrawable(appContext.getResources().getDrawable(defImageId));
+		int maxSize = (int) (Runtime.getRuntime().maxMemory() / 1024);
+		bitmapUtils = new BitmapUtils(appContext, cachePath, maxSize, cacheSize);
+		bitmapUtils.configDiskCacheEnabled(true);
+		bitmapUtils.configMemoryCacheEnabled(true);
+		//bitmapUtils.configDefaultLoadingImage(defImageId);
+		bitmapUtils.configDefaultDisplayConfig(bigPicDisplayConfig);
+		return bitmapUtils;
+	}
+
+	// public static FinalBitmap create(Context mContext, int defImageId,
+	// String dirname) {
+	// FinalBitmap fb = FinalBitmap.create(mContext);
+	// fb.configLoadingImage(defImageId);
+	// fb.configBitmapLoadThreadSize(5);
+	// fb.configDiskCacheSize(cacheSize);
+	// File f = new File(getCachePath(mContext, dirname));
+	// if (!f.exists()) {
+	// f.mkdirs();
+	// }
+	// if (f.exists()) {
+	// fb.configDiskCachePath(getCachePath(mContext, dirname));
+	// }
+	//
+	// // 配置显示
+	// /*
+	// * finalBitmap.configDisplayer(new Displayer() {
+	// *
+	// * @Override public void loadFailDisplay(View imageView, Bitmap bitmap)
+	// * { // TODO Auto-generated method stub //设置失败 显示图片 404 等等 }
+	// *
+	// * @Override public void loadCompletedisplay(View imageView, Bitmap
+	// * bitmap, BitmapDisplayConfig config) { // TODO Auto-generated method
+	// * stub // 加载成功 开启动画等等imageView.startAnimation(); } });
+	// */
+	// return fb;
+	// }
+	//
+	// public static FinalBitmap create(Context mContext, int defImageId) {
+	// return create(mContext, defImageId, "");
+	// }
+	//
+	// public static boolean isExistSD() {
+	// boolean sdCardExist = Environment.getExternalStorageState().equals(
+	// Environment.MEDIA_MOUNTED); // 判断sd卡是否存在
+	// return sdCardExist;
+	// }
+	//
+	// public static String getCachePath(Context context, String dirname) {
+	// if (cachePath.equals("") || !isExistSD()) {
+	// cachePath = context.getCacheDir().getAbsolutePath()
+	// + "/wobo/cache/phonemusic/";
+	// } else {
+	// cachePath = Environment.getExternalStorageDirectory().getPath()
+	// + "/wobo/cache/phonemusic/";
+	// }
+	// if (dirname != null || !"".equals(dirname)) {
+	// cachePath += dirname + "/";
+	// }
+	// return cachePath;
+	// }
+}

@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@id/header"
+        layout="@layout/lay_header" />
+
+    <LinearLayout
+        android:id="@+id/search_lay"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/_76px_in720p"
+            android:layout_margin="@dimen/_16px_in720p"
+            android:background="@drawable/search_edit_bg"
+            android:orientation="horizontal" >
+
+            <EditText
+                android:id="@+id/edittxt_search"
+                style="@style/font_middle_black"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/btn_delete"
+                android:background="@null"
+                android:hint="歌曲、MV"
+                android:paddingLeft="@dimen/_16px_in720p" />
+
+            <ImageButton
+                android:id="@+id/btn_delete"
+                android:layout_width="@dimen/_56px_in720p"
+                android:layout_height="@dimen/_56px_in720p"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/line1"
+                android:background="@drawable/btn_selector2"              
+                android:scaleType="fitCenter"
+                android:padding="@dimen/_8px_in720p"
+                android:src="@drawable/search_btn_del" />
+
+            <ImageView
+                android:id="@+id/line1"
+                android:layout_width="@dimen/_2px_in720p"
+                android:layout_height="fill_parent"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/_16px_in720p"
+                android:layout_toLeftOf="@+id/imgbtn_search"
+                android:background="#D6D6D6" />
+
+            <ImageButton
+                android:id="@+id/imgbtn_search"
+                android:layout_width="@dimen/_56px_in720p"
+                android:layout_height="@dimen/_56px_in720p"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/btn_selector2"
+                android:padding="@dimen/_8px_in720p"
+                android:layout_marginRight="@dimen/_8px_in720p"
+                android:scaleType="fitCenter"
+                android:src="@drawable/search_btn_bg" />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/layout2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/_16px_in720p"
+            android:paddingTop="@dimen/_16px_in720p" >
+
+            <TextView
+                android:id="@+id/txt_song"
+                style="@style/font_middle_black"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="歌曲" />
+
+            <TextView
+                android:id="@+id/txt_mv"
+                style="@style/font_middle_black"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_weight="1.0"
+                android:gravity="center"
+                android:text="MV" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/lay_cursor"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/_2px_in720p"
+            android:background="#D6D6D6" >
+
+            <ImageView
+                android:id="@+id/cursor"
+                android:layout_width="@dimen/_16px_in720p"
+                android:layout_height="@dimen/_4px_in720p"
+                android:background="@color/blue1"
+                android:scaleType="matrix" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vPager"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/bottomer"
+        android:layout_below="@+id/search_lay"
+        android:layout_gravity="center"
+        android:background="#000000"
+        android:flipInterval="30"
+        android:persistentDrawingCache="animation" />
+
+    <include
+        android:id="@+id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+</RelativeLayout>

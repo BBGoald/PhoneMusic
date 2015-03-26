@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">我播音乐</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="title_activity_main">我播音乐</string>
+    <string name="title_activity_local">LocalActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_type">TypeActivity</string>
+    <string name="title_activity_hot_mv">HotMVActivity</string>
+
+    <!-- 每日推荐MV -->
+    <string name="wobo_music_hotmv_title">每日推荐</string>
+    <string name="title_activity_mvmain">MVMainActivity</string>
+
+    <!-- mv -->
+    <string name="title_mv_main">MV</string>
+    <string name="mv_area">地区</string>
+    <string name="mv_genre">流派</string>
+    <string name="mv_feature">特色</string>
+    <string name="mv_singer">歌手</string>
+    <string name="load_error">加载异常</string>
+
+    <!-- 播放方式 -->
+    <string name="music_single">单曲循环</string>
+    <string name="music_sequence">顺序播放</string>
+    <string name="music_circulation">循环播放</string>
+    <string name="music_random">随机播放</string>
+    <string name="music_unknown">未知</string>
+    <string name="player_list_title">播放列表</string>
+    <string name="player_list_size">&#160;&#160;&#160;&#160;%1$d/%2$d</string>
+    <string name="local_play_format_cutTime">0:00</string>
+    <string name="local_play_format_TolTime">&#160;/&#160;0:00</string>
+
+    <!-- MV播放 -->
+    <string name="mv_cannot_play_prompt">    当前资源暂时失效，无法播放</string>
+
+    <!-- Local Music -->
+    <string name="locol_music">本地音乐</string>
+    <string name="add_play_line">添加到播放队列</string>
+    <string name="song_info">歌曲信息</string>
+    <string name="delete_song">删除</string>
+    <string name="local_list_title">本地音乐</string>
+    <string name="local_list_scan">扫描歌曲</string>
+    <string name="local_list_name">名称</string>
+    <string name="local_list_time">时长</string>
+    <string name="local_list_artist">歌手</string>
+    <string name="local_list_album">专辑</string>
+    <string name="local_list_path">路径</string>
+    <string name="local_list_next_music">下一首：</string>
+    <string name="local_list_dont_artist">未知艺术家</string>
+    <string name="local_list_dont_album">未知专辑</string>
+    <string name="local_list_file_invalid">当前音乐文件无效</string>
+    <string name="app_list_header_refresh_down">下拉刷新</string>
+    <string name="app_list_header_refreshing">正在刷新</string>
+    <string name="app_list_header_refresh_up">松开刷新</string>
+    <string name="app_list_header_refresh_last_update">上次更新于:%s</string>
+    <string name="app_list_footer_more">更多</string>
+    <string name="app_list_footer_nomore">没有更多数据了</string>
+    <string name="app_list_footer_loading">正在加载</string>
+    <string name="local_show_music_info_dialog_title">歌曲信息</string>
+    <string name="local_songname">歌曲名称</string>
+    <string name="local_artist">歌手</string>
+    <string name="local_playtime">播放时长</string>
+    <string name="local_song_path">歌曲路径</string>
+    <string name="local_confirm">确定</string>
+    <string name="local_cancel">取消</string>
+    <string name="scan_local">扫描本地音乐</string>
+
+    <!-- 遥控器 -->
+    <string name="wifi_disable">wifi 无效</string>
+    <string name="wifi_enable">wifi 开启</string>
+    <string name="menu_settings">设置</string>
+    <string name="title_activity_simulate_tv">触摸屏</string>
+    <string name="address_list_title">可选设备列表</string>
+    <string name="edit_text_hint_text">请输入</string>
+    <string name="connection_state_disconnect">未连接</string>
+    <string name="connection_state_connecting">连接中…</string>
+    <string name="connection_state_connected">已连接</string>
+    <string name="version_validating">验证版本中…</string>
+    <string name="dialog_title_version_update">版本更新</string>
+    <string name="dialog_msg_new_version">有可更新的版本！</string>
+    <string name="dialog_pos_btn">更新</string>
+    <string name="simulate_tv_popup_menu_tips">点击你设备上的菜单键，显示遥控器的菜单栏</string>
+    <string name="version">版本：</string>
+    <string name="manual_enter_ip">手动输入IP</string>
+    <string name="please_enter_wobo_ip">请输入电视盒的IP：</string>
+    <string name="btn_connection">连接</string>
+    <string name="btn_cancel">取消</string>
+    <string name="title_activity_singer_list">SingerListActivity</string>
+    <string name="pull_to_refresh_pull_label">下拉刷新</string>
+    <string name="pull_to_refresh_footer_pull_label">上拉加载更多</string>
+    <string name="pull_to_refresh_release_label">松开后刷新</string>
+    <string name="pull_to_refresh_footer_release_label">松开后加载</string>
+    <string name="pull_to_refresh_refreshing_label">刷新\u2026</string>
+    <string name="pull_to_refresh_footer_refreshing_label">加载中\u2026</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name="title_activity_skin">SkinActivity</string>
+    <string name="title_activity_down_load">DownLoadActivity</string>
+    <string name="title_activity_update">UpdateActivity</string>
+    <string name="title_activity_clear_cache">ClearCacheActivity</string>
+    <string name="title_activity_about">AboutActivity</string>
+
+   <!-- mediaplayer -->
+   <string name="phone_media_no_pre">没有上一个</string>
+   <string name="phone_media_no_next">没有下一个</string>
+    
+    <string name="pull_to_refresh_header_last_update">上次更新于:%s</string>
+    <!-- 手机版升级 -->
+    <string name="phone_disconnect_net">网络未连接</string>
+    <string name="phone_check_exception">检测升级过程遇到问题,不能升级</string>
+    <string name="phone_update_download_notification_title">我播手机音乐盒</string>
+    <string name="phone_update_download_notification_description">我播手机音乐盒正在下载更新&#8230;</string>
+    <string name="phone_update_title">检测更新</string>
+    <string name="phone_update_version_format">当前版本:%1$s---->最新版本:%2$s\n</string>
+    <string name="phone_update_message_yes">更新信息:\n%1$s</string>
+    <string name="phone_update_message_no">当前已经是最新版本</string>
+    <string name="phone_update_no_wifistate">当前网络不是Wi-Fi,是否继续下载?</string>
+    <string name="phone_update_cancel_downloading">取消下载</string>
+    <string name="phone_upgrade_check_path_faild">检查到升级的下载路径异常</string>
+    <string name="phone_upgrade_unknow_faild">下载应用失败</string>
+    <string name="phone_upgrade_adddownload_faild">添加升级任务失败</string>
+    <string name="phone_upgrade_file_unexist">升级文件不存在:%1$s</string>
+    <string name="phone_upgrade_parse_json_error">解析升级文件失败</string>
+    
+    <string name="network_connection_is_close">网络连接未打开</string>
+    <string name="txt_loading_data">正在努力加载数据&#8230;</string>
+    <string name="txt_no_data">没有数据</string>
+    <string name="data_load_failure">数据加载失败</string>
+    
+    
+    <!-- 网络视频 -->
+       <string name="wobo_player_video_error_tip2">亲，视频暂时无法播放，请退出后重新播放</string>
+    <string name="wobo_player_video_net_slowly">亲的网速有点慢，请耐心等待哦！</string> 
+      <string name="wobo_player_other_buffering1">缓冲中...</string>
+    <string name="wobo_player_other_buffering2">缓冲中</string>
+     <string name="wobo_player_timeout_tip">当前播放不流畅，请按菜单键切换清晰度</string>
+       <string name="wobo_player_head_tip">已经跳过片头,按左键可以回看片头</string>
+    <string name="wobo_player_tail_tip">即将跳过片尾,按右键可以观看片尾</string>
+     <string name="wobo_player_loading_tip">正在加载</string>
+      <string name="wobo_player_exit_tip">再按一次返回键退出</string>
+    
+    <string name="wobo_player_other_load_plug_failed">加载插件失败！</string>
+    
+    <!-- 关于 -->
+    <string name="txt_about_title">关于</string>
+    <string name="txt_about_introduce">\t\t小V音乐是一款提供优质音乐的免费app包含音乐排行榜，音乐分类，电台，MV等多个板块让您随时随刻享受音乐所带来的快乐，并且小V音乐可以通过手机直接推送到您家中的电视，分享好音乐，就是那么简单！</string>
+    <string name="txt_wobo_qq">QQ群 ：253469310</string>
+    <string name="txt_wobo_bbs">官  网 ：www.wobotv</string>
+    <string name="txt_wobo_version">版  本 ：</string>
+    <string name="btn_update">立即更新</string>
+    <string name="btn_check_update">检测更新</string>
+    <string name="about_wechat">微  信 ： woboip</string>
+    
+    <!-- 歌曲编辑 -->
+    <string name="txt_check_number">已经选取%1$d首</string>
+    <string name="txt_total_number">共有%1$d首歌曲</string>
+</resources>

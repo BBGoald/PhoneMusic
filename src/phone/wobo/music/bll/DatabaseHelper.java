@@ -1,0 +1,1092 @@
+package phone.wobo.music.bll;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
+import phone.wobo.music.local.LocalMusicUtil;
+import phone.wobo.music.model.MusicInfo;
+import phone.wobo.music.model.SingerFavorites;
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
+
+public class DatabaseHelper
+{
+	// private final static String TAG = "DatabaseHelper";
+	private static DatabaseHelper dbHelper;
+	private static Context mContext;
+	private static SQLiteDatabase db;
+	private static Cursor cursor;
+	private static SqliteHelper sqliteHelper;
+	private final static String dbName = "system.db";
+
+	private static SimpleDateFormat df;
+	public static int MAX_FAVORITES = 100;
+	
+	//private String TAG = "DatabaseHelper";
+	private static String TAG = "liangbang";
+
+	private DatabaseHelper()
+	{
+		Log.d(TAG, "******instance DatabaseHelper");
+		sqliteHelper = new SqliteHelper(mContext, dbName, null, 1);
+	}
+
+	public static DatabaseHelper instance(Context context)
+	{
+		Log.d(TAG, "******instance DatabaseHelper instance");
+
+		mContext = context;
+
+		if (dbHelper == null)
+		{
+			dbHelper = new DatabaseHelper();
+			df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		}
+
+		return dbHelper;
+	}
+
+	// 查询收藏 hmm
+	public List<MusicInfo> getFavoritesList()
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getFavoritesList");
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ SqliteHelper.favoritesTableName
+					+ " order by id desc limit 0," + MAX_FAVORITES, null);
+			if (null != c)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (c.moveToNext())
+				{
+					try
+					{
+						MusicInfo fav = new MusicInfo();
+						fav.setName(c.getString(c.getColumnIndex("name")));
+						fav.setAlbum(c.getString(c.getColumnIndex("album")));
+						fav.setArtist(c.getString(c.getColumnIndex("artist")));
+						fav.setPath(c.getString(c.getColumnIndex("path")));
+						fav.setPlayTime(c.getInt(c.getColumnIndex("duration")));
+						fav.setPluginPath(c.getString(c
+								.getColumnIndex("pluginPath")));
+						fav.setSingerPoster(c.getString(c
+								.getColumnIndex("singerImg")));
+
+						fav.setFileType(c.getInt(c.getColumnIndex("fileType")));
+						if (!list.contains(fav))
+						{
+							list.add(fav);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return list;
+	}
+
+	// 增加收藏 hmm
+	public boolean addFavorites(MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->addFavorites");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			if (isExistFavorites(db, favorites))
+			{
+				return false;
+			}
+
+			String sql = "insert into " + SqliteHelper.favoritesTableName
+					+ " values(null,?,?,?,?,?,?,?,?)";
+			db.execSQL(sql, getAddFavArrString(favorites));
+
+			success = true;
+		} catch (Throwable e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return success;
+	}
+
+	// 删除收藏 hmm
+	public boolean deleteFavorites(MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->deleteFavorites");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			String sql = "delete FROM "
+					+ SqliteHelper.favoritesTableName
+					+ " where name=? and artist=? and album=?  and duration=? and pluginPath=? and singerImg=? and fileType=?";
+			db.execSQL(sql, getIsSameFavArrString(favorites));
+			success = true;
+		} finally
+		{
+			sqliteHelper.close();
+		}
+
+		return success;
+	}
+
+	public List<MusicInfo> getFavoritesList(String pluginpath, String filetype)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getFavoritesList");
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ sqliteHelper.favoritesTableName
+					+ " where pluginPath in ( " + pluginpath
+					+ " ) and filetype='" + filetype + "'", null);
+			if (null != c)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (c.moveToNext())
+				{
+					MusicInfo fav = new MusicInfo();
+					fav.setName(c.getString(c.getColumnIndex("name")));
+					fav.setAlbum(c.getString(c.getColumnIndex("album")));
+					fav.setArtist(c.getString(c.getColumnIndex("artist")));
+					fav.setPath(c.getString(c.getColumnIndex("path")));
+					fav.setPlayTime(c.getInt(c.getColumnIndex("duration")));
+					fav.setPluginPath(c.getString(c
+							.getColumnIndex("pluginPath")));
+					fav.setSingerPoster(c.getString(c
+							.getColumnIndex("singerImg")));
+					fav.setFileType(c.getInt(c.getColumnIndex("fileType")));
+					if (!list.contains(fav))
+					{
+						list.add(fav);
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return list;
+	}
+
+	// 是否已经收藏过了
+	public boolean isExistFavorites(MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->isExistFavorites");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		return isExistFavorites(db, favorites);
+	}
+
+	public boolean isExistHistory(MusicInfo history)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->isExistHistory");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		return isExistHistory(db, history);
+	}
+
+	// 是否存在历史记录
+	public boolean isExistHistory(SQLiteDatabase db, MusicInfo favorites)
+	{
+
+		Log.d(TAG, "	--->DatabaseHelper--->isExistHistory");
+		boolean isExist = false;
+		Cursor c = null;
+		try
+		{
+			if (favorites != null)
+			{
+				c = db.rawQuery(
+						"SELECT * FROM "
+								+ SqliteHelper.historyTableName
+								+ " where name=? and artist=? and album=? and duration=? and pluginPath=? and singerImg=? and fileType=?",
+						getIsSameFavArrString(favorites));
+			}
+			if (null == c)
+				return isExist;
+			if (c.getCount() > 0)
+			{
+				isExist = true;
+			}
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (c != null)
+				c.close();
+		}
+
+		return isExist;
+		// return isExistFavorites(db, favorites);
+	}
+
+	// 是否已经收藏过了
+	private boolean isExistFavorites(SQLiteDatabase db, MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->isExistFavorites");
+		boolean isExist = false;
+		Cursor c = null;
+		try
+		{
+			if (favorites != null)
+			{
+				c = db.rawQuery(
+						"SELECT * FROM "
+								+ SqliteHelper.favoritesTableName
+								+ " where name=? and artist=? and album=? and duration=? and pluginPath=? and singerImg=? and fileType=?",
+						getIsSameFavArrString(favorites));
+			}
+			if (null == c)
+				return isExist;
+			if (c.getCount() > 0)
+			{
+				isExist = true;
+			}
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			c.close();
+		}
+
+		return isExist;
+	}
+
+	private String[] getAddFavArrString(MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getAddFavArrString");
+		String name = null == favorites.getName() ? "" : favorites.getName();
+		String artist = null == favorites.getArtist() ? "" : favorites
+				.getArtist();
+		String album = null == favorites.getAlbum() ? "" : favorites.getAlbum();
+		String path = null == favorites.getPath() ? "" : favorites.getPath();
+		String time = null == String.valueOf(favorites.getPlayTime()) ? ""
+				: String.valueOf(favorites.getPlayTime());
+		String pluginPath = null == favorites.getPluginPath() ? "" : favorites
+				.getPluginPath();
+		String singerImg = null == favorites.getSingerPoster() ? "" : favorites
+				.getSingerPoster();
+		String fileType = null == String.valueOf(favorites.getFileType()) ? ""
+				: String.valueOf(favorites.getFileType());
+
+		return new String[] { name, artist, album, path, time, pluginPath,
+				singerImg, fileType };
+
+	}
+
+	private String[] getIsSameFavArrString(MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getIsSameFavArrString");
+		String name = null == favorites.getName() ? "" : favorites.getName();
+		String artist = null == favorites.getArtist() ? "" : favorites
+				.getArtist();
+		String album = null == favorites.getAlbum() ? "" : favorites.getAlbum();
+		String time = null == String.valueOf(favorites.getPlayTime()) ? ""
+				: String.valueOf(favorites.getPlayTime());
+		String pluginPath = null == favorites.getPluginPath() ? "" : favorites
+				.getPluginPath();
+		String singerImg = null == favorites.getSingerPoster() ? "" : favorites
+				.getSingerPoster();
+		String fileType = null == String.valueOf(favorites.getFileType()) ? ""
+				: String.valueOf(favorites.getFileType());
+
+		return new String[] { name, artist, album, time, pluginPath, singerImg,
+				fileType };
+
+	}
+
+	// 增加下载记录
+	public boolean addDownload(MusicInfo mp3, String path, String state)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->addDownload");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			String sql = "insert into " + sqliteHelper.downloadTableName
+					+ " values(null,?,?,?,?,?,?)";
+			db.execSQL(sql, getAddDownloadString(mp3, path, state));
+			success = true;
+		} catch (Throwable e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return success;
+	}
+
+	// 修改下载状态
+	public boolean changDownloadState(String pluginPath, String state)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->changDownloadState");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			String sql = "update " + sqliteHelper.downloadTableName
+					+ " set state= '" + state + "' " + "where pluginPath like'"
+					+ pluginPath + "'";
+			db.execSQL(sql);
+			success = true;
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+
+		return success;
+	}
+
+	// 查询下载
+	public List<MusicInfo> getDownloadList()
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getDownloadList");
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ sqliteHelper.downloadTableName, null);
+			if (null != c)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (c.moveToNext())
+				{
+					try
+					{
+						MusicInfo mp3 = new MusicInfo();
+						mp3.setName(c.getString(c.getColumnIndex("name")));
+						mp3.setArtist(c.getString(c.getColumnIndex("artist")));
+						mp3.setPath(c.getString(c.getColumnIndex("localpath")));
+						mp3.setPluginPath(c.getString(c
+								.getColumnIndex("pluginPath")));
+						mp3.setFileType(c.getInt(c.getColumnIndex("fileType")));
+						mp3.setDownloadState(c.getInt(c.getColumnIndex("state")));
+						if (!list.contains(mp3))
+						{
+							list.add(mp3);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return list;
+	}
+
+	// 查询下载
+	public List<MusicInfo> getDownloadList(String pluginPath)
+	{
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ sqliteHelper.downloadTableName + " where pluginPath in ("
+					+ pluginPath + ")", null);
+			if (null != c)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (c.moveToNext())
+				{
+					try
+					{
+						MusicInfo mp3 = new MusicInfo();
+						mp3.setName(c.getString(c.getColumnIndex("name")));
+						mp3.setArtist(c.getString(c.getColumnIndex("artist")));
+						mp3.setPath(c.getString(c.getColumnIndex("localpath")));
+						mp3.setPluginPath(c.getString(c
+								.getColumnIndex("pluginPath")));
+						mp3.setFileType(c.getInt(c.getColumnIndex("fileType")));
+						mp3.setDownloadState(c.getInt(c.getColumnIndex("state")));
+						if (!list.contains(mp3))
+						{
+							list.add(mp3);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return list;
+	}
+
+	// 查询下载成功的歌曲
+	public List<MusicInfo> getDownloadSuccessList()
+	{
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ sqliteHelper.downloadTableName + " where state=?",
+					new String[] { "2" });
+			if (null != c)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (c.moveToNext())
+				{
+					try
+					{
+						MusicInfo mp3 = new MusicInfo();
+						mp3.setName(c.getString(c.getColumnIndex("name")));
+						mp3.setArtist(c.getString(c.getColumnIndex("artist")));
+						mp3.setPath(c.getString(c.getColumnIndex("localpath")));
+						mp3.setPluginPath(c.getString(c
+								.getColumnIndex("pluginPath")));
+						mp3.setFileType(c.getInt(c.getColumnIndex("fileType")));
+						mp3.setDownloadState(c.getInt(c.getColumnIndex("state")));
+						if (!list.contains(mp3))
+						{
+							list.add(mp3);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return list;
+	}
+
+	// 查询某条记录是否存在
+	public boolean songExist(String pluginPath)
+	{
+		boolean fileExist = true;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		Cursor c = null;
+		try
+		{
+			c = db.rawQuery("SELECT * FROM " + sqliteHelper.downloadTableName
+					+ " where pluginPath=?", new String[] { pluginPath });
+			if (c.getCount() > 0)
+			{
+				fileExist = false;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (c != null)
+			{
+				c.close();
+			}
+			sqliteHelper.close();
+		}
+		return fileExist;
+	}
+
+	public boolean getDownlaodState(String pluginPath)
+	{
+		// boolean fileExist = true;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		Cursor c = null;
+		try
+		{
+			c = db.rawQuery("SELECT * FROM " + sqliteHelper.downloadTableName
+					+ " where pluginPath=?", new String[] { pluginPath });
+			if (c.getCount() > 0)
+			{
+				// fileExist = false;
+				String state = c.getString(c.getColumnIndex("state"));
+				if (state != null)
+				{
+					if (state.equals("3"))
+						return false;
+					if (state.equals("2"))
+						return true;
+				}
+				return false;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (c != null)
+			{
+				c.close();
+			}
+			sqliteHelper.close();
+		}
+		return false;
+	}
+
+	public boolean songDownloadFail(String pluginPath)
+	{
+		boolean fileExist = false;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		Cursor c = null;
+		try
+		{
+			c = db.rawQuery("SELECT * FROM " + sqliteHelper.downloadTableName
+					+ " where pluginPath=? and state=?", new String[] {
+					pluginPath, "3" });
+			if (c.getCount() > 0)
+			{
+				fileExist = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (c != null)
+			{
+				c.close();
+			}
+			sqliteHelper.close();
+		}
+		return fileExist;
+	}
+
+	// 查询歌曲是否下载成功
+	public boolean songDownloadSuccess(String pluginPath)
+	{
+		boolean fileExist = false;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		Cursor c = null;
+		try
+		{
+			c = db.rawQuery("SELECT * FROM " + sqliteHelper.downloadTableName
+					+ " where pluginPath=? and state=?", new String[] {
+					pluginPath, "2" });
+			if (c.getCount() > 0)
+			{
+				fileExist = true;
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			if (c != null)
+			{
+				c.close();
+			}
+			sqliteHelper.close();
+		}
+		return fileExist;
+	}
+
+	// 删除记录
+	public boolean deleteDownload(String pluginPath)
+	{
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			String sql = "delete FROM " + sqliteHelper.downloadTableName
+					+ " where pluginPath like '" + pluginPath + "'";
+			db.execSQL(sql);
+			success = true;
+		} finally
+		{
+			sqliteHelper.close();
+		}
+
+		return success;
+	}
+
+	// 删除历史记录
+	public boolean deleteHistory(MusicInfo favorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->deleteHistory");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			String sql = "delete FROM "
+					+ SqliteHelper.historyTableName
+					+ " where name=? and artist=? and album=?  and duration=? and pluginPath=? and singerImg=? and fileType=?";
+			db.execSQL(sql, getIsSameFavArrString(favorites));
+			success = true;
+		} finally
+		{
+			sqliteHelper.close();
+			db.close();
+		}
+
+		return success;
+	}
+
+	private String[] getAddDownloadString(MusicInfo mp3, String path,
+			String state)
+	{
+		String name = null == mp3.getName() ? "" : mp3.getName();
+		String artist = null == mp3.getArtist() ? "" : mp3.getArtist();
+		String pluginPath = null == mp3.getPluginPath() ? "" : mp3
+				.getPluginPath();
+		String fileType = "0";
+		return new String[] { name, artist, path, pluginPath, state, fileType };
+
+	}
+
+	// 增加歌手收藏
+	public static boolean addFavoritesSingers(SingerFavorites singerFavorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->addFavoritesSingers");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			if (isExistSingerFavorites(singerFavorites))
+			{
+				return false;
+			}
+
+			String sql = "insert into " + SqliteHelper.singersTableName
+					+ " values(null,?,?,?,?)";
+			db.execSQL(sql, getAddFavoritesSingersString(singerFavorites));
+
+			success = true;
+		} catch (Throwable e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return success;
+	}
+
+	public List<SingerFavorites> getSingerFavoritesList(int maxNum)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getSingerFavoritesList");
+		List<SingerFavorites> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ SqliteHelper.singersTableName
+					+ " order by id desc limit 0," + String.valueOf(maxNum), null);
+			if (null != c)
+			{
+				list = new ArrayList<SingerFavorites>();
+				while (c.moveToNext())
+				{
+					try
+					{
+						SingerFavorites fav = new SingerFavorites();
+
+						fav.setKeySinger(c.getString(c
+								.getColumnIndex("keySinger")));
+						fav.setSingerName(c.getString(c
+								.getColumnIndex("artist")));
+						fav.setImgUrl(c.getString(c.getColumnIndex("img_url")));
+						fav.setKeySingerClass(c.getString(c
+								.getColumnIndex("keySingerClass")));
+						if (!list.contains(fav))
+						{
+							list.add(fav);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return list;
+	}
+	
+	// 查询收藏 hmm
+	public List<SingerFavorites> getSingerFavoritesList()
+	{
+		return getSingerFavoritesList(100);
+	}
+
+	// 删除歌手收藏
+	public static boolean deleteSingerFavorites(SingerFavorites singerFavorites)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->deleteSingerFavorites");
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			String sql = "delete FROM " + SqliteHelper.singersTableName
+					+ " where keySinger like '" + singerFavorites.getKeySinger() + "' and artist like '"+singerFavorites.getSingerName()+"'";
+			db.execSQL(sql);
+			success = true;
+		} finally
+		{
+			sqliteHelper.close();
+		}
+
+		return success;
+	}
+
+	// 该歌手是否已经收藏过了
+	public static boolean isExistSingerFavorites(SingerFavorites singerFavorites)
+	{
+		boolean isExist = false;
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		Cursor c = null;
+		try
+		{
+			
+				c = db.rawQuery("SELECT * FROM "
+						+ SqliteHelper.singersTableName + " where keySinger=? and artist=?",
+						new String[] { singerFavorites.getKeySinger(),singerFavorites.getSingerName() });
+			
+			if (null == c)
+				return isExist;
+			if (c.getCount() > 0)
+			{
+				isExist = true;
+			}
+
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			c.close();
+		}
+
+		return isExist;
+	}
+
+	private static String[] getAddFavoritesSingersString(
+			SingerFavorites singerFavorites)
+	{
+		String keySinger = null == singerFavorites.getKeySinger() ? ""
+				: singerFavorites.getKeySinger();
+		String artist = null == singerFavorites.getSingerName() ? ""
+				: singerFavorites.getSingerName();
+		String imgUrl = null == singerFavorites.getImgUrl() ? ""
+				: singerFavorites.getImgUrl();
+		String keySingerClass = null == singerFavorites.getKeySingerClass() ? ""
+				: singerFavorites.getKeySingerClass();
+		return new String[] { keySinger, artist, imgUrl, keySingerClass };
+
+	}
+
+	// 增加历史记录
+	public boolean addHistory(MusicInfo history)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->addHistory");
+
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		boolean success = false;
+		try
+		{
+			if (isExistHistory(db, history))
+			{
+				return false;
+			}
+
+			String sql = "insert into " + SqliteHelper.historyTableName
+					+ " values(null,?,?,?,?,?,?,?,?)";
+			db.execSQL(sql, getAddFavArrString(history));
+
+			success = true;
+		} catch (Throwable e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return success;
+	}
+
+	// 查询历史记录
+	public List<MusicInfo> getHistoryList()
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getHistoryList");
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		try
+		{
+			Cursor c = db.rawQuery("SELECT * FROM "
+					+ SqliteHelper.historyTableName
+					+ " order by id desc limit 0," + MAX_FAVORITES, null);
+			if (null != c)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (c.moveToNext())
+				{					//Log.d(TAG, "	--########################################################################>");
+
+					try
+					{
+						MusicInfo fav = new MusicInfo();
+						fav.setName(c.getString(c.getColumnIndex("name")));
+						fav.setAlbum(c.getString(c.getColumnIndex("album")));
+						fav.setArtist(c.getString(c.getColumnIndex("artist")));
+						fav.setPath(c.getString(c.getColumnIndex("path")));
+						fav.setPlayTime(c.getInt(c.getColumnIndex("duration")));
+						fav.setPluginPath(c.getString(c
+								.getColumnIndex("pluginPath")));
+						fav.setSingerPoster(c.getString(c
+								.getColumnIndex("singerImg")));
+
+						fav.setFileType(c.getInt(c.getColumnIndex("fileType")));
+						if (!list.contains(fav))
+						{
+							Log.d(TAG, "	--->DatabaseHelper--->getHistoryList ######fav= " + fav);
+
+							list.add(fav);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+				c.close();
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		Log.d(TAG, "	--->DatabaseHelper--->getHistoryList return ######list= " + list);
+		return list;
+	}
+
+	
+	//扫描本地音乐--->插入到本地音乐库(local)
+	public static List<MusicInfo> scanLocalMusic()
+	{
+		Log.i(TAG, "	--->DatabaseHelper--->scanLocalMusic");
+		Log.i(TAG, "	-----------------scanLocalMusic------------------start----------------");
+
+		List<MusicInfo> audioList = LocalMusicUtil.getLocalAudioList(mContext);
+		SQLiteDatabase db = sqliteHelper.getWritableDatabase();
+		String deletesql = "delete from "+SqliteHelper.localmusicTableName;
+		String sql = "insert into " + SqliteHelper.localmusicTableName
+				+ " values(null,?,?,?,?)";
+		try
+		{
+			db.execSQL(deletesql);
+			for (int i = 0; i < audioList.size(); i++)
+			{
+				String path = audioList.get(i).getPath() == null ? ""
+						: audioList.get(i).getPath();
+				
+				String name = audioList.get(i).getName() == null ? ""
+						: audioList.get(i).getName();
+				String artist = audioList.get(i).getArtist() == null ? ""
+						: audioList.get(i).getArtist();
+				String[] args = { name, artist, path ,""};
+				try{
+					//判断该首歌曲是否在本地音乐库中存在
+					db.execSQL(sql, args);
+				}catch(Exception e){
+					e.printStackTrace();
+				}
+			}
+		} catch (Exception e)
+		{
+			e.printStackTrace();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		Log.i(TAG, "	--->DatabaseHelper--->scanLocalMusic return######audioList= " + audioList);
+		Log.i(TAG, "	-----------------scanLocalMusic------------------end----------------");
+
+		return audioList;
+	}
+
+	
+	//获取本地音乐库列表
+	public static List<MusicInfo> localAudioList()
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->localAudioList");
+		List<MusicInfo> list = null;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		String sql = "select distinct name,artist,path from "
+				+ SqliteHelper.localmusicTableName;
+		try
+		{
+			cursor = db.rawQuery(sql, null);
+			if (cursor != null)
+			{
+				list = new ArrayList<MusicInfo>();
+				while (cursor.moveToNext())//查询出来的cursor的初始位置是指向第一条记录的前一个位置的，因此用moveToNext来指向
+					//第一条记录
+				{
+					try
+					{
+						MusicInfo local = new MusicInfo();
+						String name = cursor.getString(cursor.getColumnIndex("name"));
+						local.setName(name);
+						String artist = cursor.getString(cursor.getColumnIndex("artist"));
+						local.setArtist(artist);
+						String path = cursor.getString(cursor.getColumnIndex("path"));
+						local.setPath(path);
+
+						if (!list.contains(local))
+						{
+							list.add(local);
+						}
+					} catch (Exception e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		} finally
+		{
+			sqliteHelper.close();
+		}
+
+		Log.d(TAG, "	--->DatabaseHelper--->localAudioList return######list= " + list);
+		return list;
+	}
+
+	//获取本地音乐总数
+	public static int getLocalTatal()
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->getLocalTatal");
+		Cursor cursor = null;
+		int count;
+		SQLiteDatabase db = sqliteHelper.getReadableDatabase();
+		String sql = "select count(*) from " + SqliteHelper.localmusicTableName
+				+ " group by path";
+
+		try
+		{
+			cursor = db.rawQuery(sql, null);
+			count = cursor == null ? 0 : cursor.getCount();
+		} finally
+		{
+			sqliteHelper.close();
+		}
+		return count;
+	}
+	
+	//删除本地音乐多首歌曲
+	public static void deleteLocalDatas(String[] path)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->deleteLocalDatas");
+		db = sqliteHelper.getWritableDatabase();
+		String sql = "delete from " + SqliteHelper.localmusicTableName + " where path = ";
+		String buffer = "";
+		
+		if(path == null || path.length == 0)
+			return;
+		buffer = " '"+path[0]+ " '";
+		for (int i = 1; i < path.length; i++)
+		{
+			buffer = buffer + " or path = "+ " '"+path[i]+ " '"; 
+		}
+		
+		try
+		{
+			db.execSQL(sql+buffer);
+		} finally
+		{
+			sqliteHelper.close();
+		}
+	}
+	
+	//删除单首歌曲
+	public static void deleteLocalDatas(String path)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->deleteLocalDatas");
+		db = sqliteHelper.getWritableDatabase();
+		String sql = "delete from " + SqliteHelper.localmusicTableName + " where path = \""+path +"\"";
+		
+		try
+		{
+			db.execSQL(sql);
+		} finally
+		{
+			sqliteHelper.close();
+		}
+	}
+
+	//插入歌曲到本地音乐库
+	public static void insertLocal(String name,String artist,String path,String stat)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->insertLocal");
+		String sql = "insert into " + SqliteHelper.localmusicTableName 
+				+ "( name,artist,name,stat) values (?,?,?,?)";
+		db = sqliteHelper.getWritableDatabase();
+		try
+		{
+			db.execSQL(sql);
+		}catch(Exception e)
+		{
+			
+		}finally{
+			sqliteHelper.close();
+		}
+	}
+	
+	public static void insertLocal(String name,String artist,String path)
+	{
+		Log.d(TAG, "	--->DatabaseHelper--->insertLocal");
+		insertLocal(name,artist,path,null);
+	}
+	
+}

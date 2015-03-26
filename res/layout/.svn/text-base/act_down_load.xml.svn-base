@@ -1,0 +1,107 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ffffff" >
+
+    <include
+        android:id="@id/header"
+        layout="@layout/lay_header" />
+
+    <TextView
+        android:id="@+id/txt_label"
+        style="@style/font_middle_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:paddingLeft="@dimen/_16px_in720p"
+        android:paddingTop="@dimen/_16px_in720p"
+        android:paddingBottom="@dimen/_16px_in720p"
+        android:paddingRight="@dimen/_8px_in720p"
+        android:layout_below="@+id/header"      
+        android:text="当前：" />
+
+    <TextView
+        android:id="@+id/txt_current_path"
+        style="@style/font_middle_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:layout_toRightOf="@+id/txt_label"
+        android:paddingTop="@dimen/_16px_in720p"
+        android:paddingBottom="@dimen/_16px_in720p" />
+
+    <ImageView
+        android:id="@+id/line1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/txt_current_path"
+        android:background="@color/gray1" />
+
+    <LinearLayout
+        android:id="@+id/btn_back_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/line1"
+        android:background="@drawable/btn_selector2"
+        android:onClick="true"          
+        android:orientation="horizontal" >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            
+            android:layout_marginLeft="@dimen/_16px_in720p"
+            android:src="@drawable/btn_tolast" />
+
+        <TextView
+            style="@style/font_middle_black"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/_30px_in720p"
+            android:paddingBottom="@dimen/_30px_in720p"
+            android:layout_marginLeft="@dimen/_16px_in720p"
+            android:text="返回上一级" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/line2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/btn_back_next"
+        android:background="@color/gray1" />
+
+    <ListView
+        android:id="@+id/ls_file_path"
+        style="@style/listview_style1"
+        android:layout_above="@+id/btn_save"
+        android:layout_below="@+id/line2" >
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/btn_save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_selector2"
+        android:onClick="true"
+        android:orientation="horizontal" >
+
+        <TextView
+            style="@style/font_middle_white"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="@dimen/_16px_in720p"
+            android:background="@drawable/ctr_btn_bg"
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/_16px_in720p"
+            android:paddingLeft="@dimen/_44px_in720p"
+            android:paddingRight="@dimen/_44px_in720p"
+            android:paddingTop="@dimen/_16px_in720p"
+            android:text="保存" />
+    </LinearLayout>
+
+</RelativeLayout>

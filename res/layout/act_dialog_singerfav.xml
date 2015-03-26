@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/DodgerBlue"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/singer_fav_dialog_name"
+        style="@style/font_middle_black"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8px_in720p"
+        android:background="@color/white"
+        android:padding="@dimen/_25px_in720p" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/gray" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@color/white" >
+
+            <ImageView
+                android:id="@+id/singer_fav_dialog_icon"
+                android:layout_width="@dimen/_42px_in720p"
+                android:layout_height="@dimen/_42px_in720p"
+                android:layout_marginLeft="@dimen/_33px_in720p"
+                android:layout_centerVertical="true"
+                android:src="@drawable/search_btn_del" />
+
+            <TextView
+                android:id="@+id/singer_fav_cancel_tv"
+                style="@style/font_small_black"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_33px_in720p"
+                android:layout_toRightOf="@+id/singer_fav_dialog_icon"
+                android:padding="@dimen/_25px_in720p"
+                android:clickable="true"
+                android:text="@string/favedsinger_cancel" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>

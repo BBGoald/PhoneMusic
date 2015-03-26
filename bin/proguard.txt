@@ -1,0 +1,134 @@
+# view res/layout/act_fav.xml #generated:50
+# view res/layout/act_main_launcher.xml #generated:7
+# view res/layout/act_mv_main.xml #generated:74
+# view res/layout/act_online_main.xml #generated:64
+# view res/layout/act_search.xml #generated:112
+-keep class android.support.v4.view.ViewPager { <init>(...); }
+
+# view AndroidManifest.xml #generated:86
+-keep class phone.wobo.music.MainLauncherActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:306
+-keep class phone.wobo.music.SettingActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:56
+-keep class phone.wobo.music.TVBoxApplication { <init>(...); }
+
+# view AndroidManifest.xml #generated:285
+-keep class phone.wobo.music.control.IpAdressList { <init>(...); }
+
+# view AndroidManifest.xml #generated:275
+-keep class phone.wobo.music.control.TVClientActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:356
+-keep class phone.wobo.music.download.DownloadManagerActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:187
+-keep class phone.wobo.music.favorites.FavoritesSingerActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:177
+-keep class phone.wobo.music.favorites.FavoritesSongActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:147
+-keep class phone.wobo.music.history.HistoryActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:197
+-keep class phone.wobo.music.hotmv.HotMVActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:97
+-keep class phone.wobo.music.local.LocalActivity { <init>(...); }
+
+# view res/layout/act_musicplayer.xml #generated:65
+-keep class phone.wobo.music.lrc.LyricView { <init>(...); }
+
+# view AndroidManifest.xml #generated:218
+-keep class phone.wobo.music.mv.MVMainActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:254
+-keep class phone.wobo.music.mv.MVShowActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:295
+-keep class phone.wobo.music.mv.SingerListActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:228
+-keep class phone.wobo.music.online.MainActivity { <init>(...); }
+
+# view res/layout/item_onlinetype_list.xml #generated:33
+-keep class phone.wobo.music.online.MyGridView { <init>(...); }
+
+# view AndroidManifest.xml #generated:107
+-keep class phone.wobo.music.online.RankSongActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:127
+-keep class phone.wobo.music.online.SingerActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:137
+-keep class phone.wobo.music.online.SingerSongActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:117
+-keep class phone.wobo.music.online.SingerTypeActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:157
+-keep class phone.wobo.music.online.TypeSongActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:167
+-keep class phone.wobo.music.player.MusicPlayActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:238
+-keep class phone.wobo.music.player.MusicPlayerService { <init>(...); }
+
+# view AndroidManifest.xml #generated:264
+-keep class phone.wobo.music.search.SearchActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:351
+-keep class phone.wobo.music.setting.AboutActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:336
+-keep class phone.wobo.music.setting.DownLoadActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:316
+-keep class phone.wobo.music.setting.SettingsActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:346
+-keep class phone.wobo.music.setting.UpdateActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:326
+-keep class phone.wobo.music.skin.SkinActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:247
+-keep class phone.wobo.music.upgrade.UpgradeService { <init>(...); }
+
+# view res/layout/act_online_singerlist.xml #generated:30
+# view res/layout/act_singer_list.xml #generated:19
+-keep class phone.wobo.music.util.LetterLayout { <init>(...); }
+
+# view res/layout/act_grid.xml #generated:12
+# view res/layout/act_list.xml #generated:13
+# view res/layout/act_online_singerlist.xml #generated:11
+# view res/layout/act_singer_song.xml #generated:82
+# view res/layout/lay_search_grid.xml #generated:25
+# view res/layout/lay_search_list.xml #generated:24
+-keep class phone.wobo.music.util.PullToRefreshView { <init>(...); }
+
+# view AndroidManifest.xml #generated:207
+-keep class phone.wobo.music.videoplayer.WoboPlayerActivity { <init>(...); }
+
+# onClick res/layout/act_down_load.xml #generated:41
+# onClick res/layout/act_down_load.xml #generated:83
+# onClick res/layout/act_main.xml #generated:106
+# onClick res/layout/act_main.xml #generated:132
+# onClick res/layout/act_main.xml #generated:170
+# onClick res/layout/act_main.xml #generated:221
+# onClick res/layout/act_main.xml #generated:246
+# onClick res/layout/act_main.xml #generated:271
+# onClick res/layout/act_main.xml #generated:296
+# onClick res/layout/act_main.xml #generated:323
+# onClick res/layout/act_main.xml #generated:43
+# onClick res/layout/act_main.xml #generated:70
+# onClick res/layout/act_settings.xml #generated:172
+# onClick res/layout/item_onlinerank_song_list.xml #generated:116
+# onClick res/layout/item_onlinerank_song_list.xml #generated:143
+# onClick res/layout/item_onlinerank_song_list.xml #generated:89
+# onClick res/layout/lay_bottom_player.xml #generated:58
+-keepclassmembers class * { *** true(...); }
+

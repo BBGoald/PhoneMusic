@@ -1,0 +1,148 @@
+package phone.wobo.music.history;
+
+import java.util.List;
+
+import com.lidroid.xutils.BitmapUtils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
+import phone.wobo.music.BaseActivity;
+import phone.wobo.music.R;
+import phone.wobo.music.model.MusicInfo;
+import phone.wobo.music.online.SongListAdapter;
+import phone.wobo.music.util.FuncUtils;
+import phone.wobo.music.util.ImageCache;
+
+public class HistoryActivity extends BaseActivity implements
+		OnItemClickListener {
+	private final int EVENT_REFRESH_listview = 1;
+	ListView ls_song;
+	TextView tv_msg;
+	SongListAdapter adapter;
+	List<MusicInfo> list;
+	// LocalListAdapter adapter;
+
+	Context mContext;
+//	private FinalBitmap fb;
+	private BitmapUtils fb;
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.act_list_refresh_no);
+		mContext = HistoryActivity.this;
+		setTitle("最近播放");
+		initView();
+		fb = ImageCache.create(this, R.drawable.online_grid_loading_default);
+		loadData();
+	}
+
+	@Override
+	protected void onNewIntent(Intent intent) {
+		super.onNewIntent(intent);
+		startActivity(intent);
+		finish();
+	}
+
+	private void initView() {
+		tv_msg = (TextView) findViewById(R.id.msg);
+		ls_song = (ListView) findViewById(R.id.ls_song);
+		ls_song.setItemsCanFocus(true);
+		adapter = new SongListAdapter(mContext) {
+			protected void play(View view, int position) {
+				List<MusicInfo> listMusic = adapter.getListData();
+				if (isExistMusic(listMusic)) {
+					FuncUtils.beginClickAnimation(HistoryActivity.this, view, phone.wobo.music.R.drawable.ic_anim_music);
+					playMusic(listMusic, position);
+				}
+			}
+
+			protected void add2List(View view, int position) {
+				List<MusicInfo> listMusic = adapter.getListData();
+				if (isExistMusic(listMusic)) {
+					FuncUtils.beginClickAnimation(HistoryActivity.this, view, phone.wobo.music.R.drawable.ic_anim_add);
+					add2PlayList(listMusic.get(position));
+				}
+			}
+
+			protected void add2fav(int position) {
+				List<MusicInfo> listMusic = adapter.getListData();
+				if (isExistMusic(listMusic)) {
+					Toast.makeText(mContext, "已收藏", Toast.LENGTH_SHORT).show();
+					handleFavorite(listMusic.get(position));
+				}
+			}
+
+			protected void add2download(View view, int position) {
+				List<MusicInfo> listMusic = adapter.getListData();
+				if (isExistMusic(listMusic)) {
+					FuncUtils.beginClickAnimation(HistoryActivity.this, view, phone.wobo.music.R.drawable.btn_download);
+					startDownload(listMusic.get(position));
+					Toast.makeText(mContext, "开始下载", Toast.LENGTH_SHORT).show();
+				}
+			}
+
+			protected void play2TV(int position) {
+				List<MusicInfo> listMusic = adapter.getListData();
+				if (isExistMusic(listMusic)) {
+					Toast.makeText(mContext, "在电视上播放", Toast.LENGTH_SHORT)
+							.show();
+					playMusicOnTV(listMusic, position);
+				}
+			}
+		};
+		ls_song.setAdapter(adapter);
+		ls_song.setOnItemClickListener(this);
+	}
+
+	private void loadData() {
+		loading.show();
+		new Thread() {
+			public void run() {
+				list = dbHelper.getHistoryList();
+				handler.sendEmptyMessage(EVENT_REFRESH_listview);
+			};
+		}.start();
+	}
+
+	private void refrshListView() {
+
+		if (list == null || list.size() == 0) {
+			tv_msg.setVisibility(View.VISIBLE);
+			ls_song.setVisibility(View.GONE);
+			tv_msg.setText("暂无数据");
+			return;
+		}
+		tv_msg.setVisibility(View.GONE);
+		ls_song.setVisibility(View.VISIBLE);
+		adapter.setListData(list);
+
+	}
+
+	private Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			if (msg.what == EVENT_REFRESH_listview) {
+				loading.close();
+				refrshListView();
+
+			}
+			return false;
+		}
+	});
+
+	@Override
+	public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3) {
+
+	}
+
+}

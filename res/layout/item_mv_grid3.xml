@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/singer_fav"
+    android:layout_width="match_parent"
+    android:clickable="false"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/poster"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/_220px_in720p"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/online_grid_loading_default" />
+
+    <TextView
+        android:id="@+id/txtName"
+        style="@style/font_middle_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/poster"
+        android:layout_centerHorizontal="true"
+        android:paddingTop="@dimen/_8px_in720p" />
+
+</RelativeLayout>

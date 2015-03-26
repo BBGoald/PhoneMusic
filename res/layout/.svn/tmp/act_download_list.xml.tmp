@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/down_layout"
+    style="@style/layout_background"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@+id/header"
+        layout="@layout/lay_header" />
+    <!-- 歌曲列表 -->
+
+    <RelativeLayout
+        android:id="@+id/currentCheckNumber"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_100px_in720p"
+        android:layout_below="@+id/header"
+        android:gravity="center_vertical" >
+
+        <RelativeLayout
+            android:id="@+id/lay_check_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <TextView
+                android:id="@+id/txt_song_total"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/_32px_in720p"
+                android:text="总共13首歌曲" />
+
+            <ImageButton
+                android:id="@+id/btn_song_editor"
+                android:layout_width="@dimen/_54px_in720p"
+                android:layout_height="@dimen/_54px_in720p"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/_16px_in720p"
+                android:background="@drawable/btn_selector2"
+                android:padding="@dimen/_8px_in720p"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_editor" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/lay_editor"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:visibility="gone" >
+
+            <ImageView
+                android:id="@+id/img_check_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+<<<<<<< .mine
+                android:layout_marginLeft="@dimen/_25px_in720p"
+                android:src="@drawable/btn_uncheck"
+                android:background="@null" />
+=======
+                android:padding="@dimen/_16px_in720p"
+                 android:layout_marginLeft="@dimen/_16px_in720p"
+                android:scaleType="fitCenter"
+                android:src="@drawable/btn_uncheck" />
+>>>>>>> .r3624
+
+            <TextView
+                android:id="@+id/txt_check_all"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/img_check_all"
+                android:paddingLeft="@dimen/_20px_in720p"
+                android:text="全选" />
+
+            <TextView
+                android:id="@+id/txt_check_number"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@+id/txt_check_all"
+                android:paddingLeft="@dimen/_24px_in720p"
+                android:text="已选取12首" />
+
+            <TextView
+                android:id="@+id/txt_cancel_editor"
+                style="@style/font_small_gray"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/_24px_in720p"
+                android:text="取消" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_3px_in720p"
+        android:layout_below="@+id/currentCheckNumber"
+        android:background="@color/gray1" />
+
+    <ListView
+        android:id="@+id/download_lsit"
+        style="@style/listview_style1"
+        android:layout_above="@+id/bottomer"
+        android:layout_below="@+id/line" >
+    </ListView>
+
+    <TextView
+        android:id="@+id/txt_msg"
+        style="@style/font_middle_black"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
+
+    <include
+        android:id="@+id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+    <LinearLayout
+        android:id="@+id/expandable_editor"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/_150px_in720p"
+        android:layout_alignParentBottom="true"
+        android:background="#3E3A39"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="gone" >
+
+        <Button
+            android:id="@+id/btn_delete"
+            style="@style/font_small_white"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn_selector2"
+            android:drawableTop="@drawable/btn_delete"
+            android:gravity="center"
+            android:padding="@dimen/dimen_small_1"
+            android:text="删除" />
+    </LinearLayout>
+
+</RelativeLayout>

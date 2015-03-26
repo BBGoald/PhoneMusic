@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" 
+    android:background="@color/white">
+
+    <RelativeLayout
+        android:id="@id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue1" >
+<ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="@dimen/_94px_in720p"
+        android:layout_height="@dimen/_94px_in720p"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/btn_selector2"
+       android:padding="@dimen/_24px_in720p"
+        android:scaleType="fitCenter"
+        android:src="@drawable/btn_back" />
+        <TextView
+            style="@style/font_big_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/_24px_in720p"
+            android:text="@string/address_list_title" />
+
+        <Button
+            android:id="@+id/addip"
+            style="@style/font_small_white"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/_24px_in720p"
+            android:background="@drawable/ctr_btn_bg"
+            android:padding="@dimen/_16px_in720p"
+            android:text="@string/manual_enter_ip" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/ip_list"
+        style="@style/listview_style1"      
+        android:layout_below="@+id/header" >
+    </ListView>
+
+    <TextView
+        android:id="@+id/versionCode"
+        style="@style/font_middle_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:padding="@dimen/_16px_in720p"
+        android:layout_marginBottom="@dimen/_16px_in720p"
+         android:background="@drawable/ctr_btn_bg"
+        android:text=" " />
+
+</RelativeLayout>

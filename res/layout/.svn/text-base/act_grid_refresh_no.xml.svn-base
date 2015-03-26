@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <include
+        android:id="@id/header"
+        layout="@layout/lay_header" />
+
+    <RelativeLayout
+        android:id="@+id/singer_fav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/header"
+        android:visibility="gone"
+         android:layout_marginBottom="@dimen/_8px_in720p"
+        android:background="#EFEFEF" >
+
+        <RelativeLayout
+            android:id="@+id/singer_fav_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true" >
+
+            <TextView
+                style="@style/font_middle_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="@dimen/_8px_in720p"
+                android:gravity="center_vertical"
+                android:text="@string/favedsinger" />
+
+            <RelativeLayout
+                android:id="@+id/singer_fav_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:padding="@dimen/_9px_in720p" >
+
+                <TextView
+                    style="@style/font_middle_black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toLeftOf="@+id/singer_fav_more_icon"
+                    android:gravity="center_vertical"
+                    android:paddingRight="@dimen/_16px_in720p"
+                    android:text="@string/favedsinger_more" />
+
+                <ImageView
+                    android:id="@+id/singer_fav_more_icon"
+                    android:layout_width="@dimen/_34px_in720p"
+                    android:layout_height="@dimen/_34px_in720p"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/singer_fav_more" />
+            </RelativeLayout>
+        </RelativeLayout>
+
+        <!-- <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_67px_in720p"
+            android:layout_alignBottom="@+id/singer_fav_imgshow"
+            android:background="#3E3A39" /> -->
+
+        <GridView
+            android:id="@+id/singer_fav_imgshow"
+            style="@style/gridview_style1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/singer_fav_title"
+            android:background="#00000000"
+            android:numColumns="4" />
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/gv_rank"
+        style="@style/gridview_style1"
+        android:layout_above="@+id/bottomer"
+        android:layout_below="@+id/singer_fav"
+        android:paddingTop="@dimen/_2px_in720p"
+      
+        android:numColumns="@integer/grid_clums_no_refresh" />
+
+    <TextView
+        android:id="@+id/msg"
+        style="@style/font_middle_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="gone" />
+
+    <include
+        android:id="@id/bottomer"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/lay_bottom_player" />
+
+</RelativeLayout>

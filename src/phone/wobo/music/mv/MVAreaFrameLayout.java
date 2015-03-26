@@ -1,0 +1,154 @@
+package phone.wobo.music.mv;
+
+import java.util.ArrayList;
+import java.util.List;
+import phone.wobo.music.R;
+import phone.wobo.music.bll.MVHelper;
+import phone.wobo.music.bll.OnlineLogic;
+import phone.wobo.music.model.MV;
+import phone.wobo.music.model.MVLabel;
+import phone.wobo.music.online.SimpleFrameLayout;
+import phone.wobo.music.util.ImageCache;
+import phone.wobo.music.util.SharedFileHelper;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
+import android.util.AttributeSet;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.GridView;
+import android.widget.TextView;
+import com.lidroid.xutils.BitmapUtils;
+
+public class MVAreaFrameLayout extends SimpleFrameLayout implements
+		OnItemClickListener {
+	private String type="area";
+	private MVGridAdapter adapter;
+	private Context mContext;
+	private final static int MV_AREA_FINISH = 1;
+	private final int MV_LOAD_FINISH = 2;
+	private BitmapUtils fb;
+	private List<MVLabel> list;
+	private MV mv;
+	private GridView gv_type, gv_mv;
+	private TextView txt_msg;
+	private MVShowAdapter mvAdapter;
+
+	public MVAreaFrameLayout(Context context) {
+		this(context, null);
+		this.mContext = context;
+		LayoutInflater inflater = (LayoutInflater) mContext
+				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+		View view = inflater.inflate(R.layout.lay_mv_grid, this);
+		list = new ArrayList<MVLabel>();
+		fb = ImageCache
+				.create(mContext, R.drawable.long_movie_default);
+		initView(view);
+		loading.show();
+		loadType();
+	}
+
+	public MVAreaFrameLayout(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		this.mContext = context;
+	}
+
+	private void initView(View view) {
+		txt_msg = (TextView) view.findViewById(R.id.msg);
+		gv_type = (GridView) view.findViewById(R.id.gv_type);
+		adapter = new MVGridAdapter(mContext, fb);
+		gv_type.setAdapter(adapter);
+		gv_type.setOnItemClickListener(this);
+		gv_mv = (GridView) view.findViewById(R.id.gv_mv);
+		
+		mvAdapter = new MVShowAdapter(mContext, fb);
+		gv_mv.setAdapter(mvAdapter);
+		gv_mv.setOnItemClickListener(this);
+	}
+
+	private void loadType() {
+		new Thread() {
+			public void run() {
+				String json = SharedFileHelper.getPreference(mContext,
+						MVUtil.MV_Name, MVUtil.MV_Area_Key);
+				if (json == null || json.equals("")) {
+					json = MVUtil.loadLabelData("area");
+				}
+				list = MVUtil.getMvLabelList(json);
+				handler.sendEmptyMessage(MV_AREA_FINISH);
+				if (list != null && list.size() > 0) {
+					int index=MVHelper.getRandom(0,list.size());
+					//loadMV("" + list.get(index).getId(), MVHelper.getRandom(1,3));
+					mv = MVUtil.getMVList("area", ""+list.get(index).getId(), MVHelper.getRandom(1,3),20);
+					handler.sendEmptyMessage(MV_LOAD_FINISH);
+				}
+				MVUtil.updateMVCache(mContext, MVUtil.MV_Area_Key,
+						MVUtil.loadLabelData("area"));
+			}
+		}.start();
+	}
+
+	private void loadMV(final String key, final int page) {
+		new Thread() {
+			@Override
+			public void run() {
+				mv = MVUtil.getMVList("area", key, page,20);
+				handler.sendEmptyMessage(MV_LOAD_FINISH);
+			}
+
+		}.start();
+	}
+
+	private Handler handler = new Handler(new Handler.Callback() {
+		@Override
+		public boolean handleMessage(Message msg) {
+			if (msg.what == MV_AREA_FINISH) {
+				loading.close();
+				refreshAreaView(msg);
+				/*if (list != null && list.size() > 0) {
+					int index=MVHelper.getRandom(0,list.size());
+					loadMV("" + list.get(index).getId(), MVHelper.getRandom(1,3));
+				}*/
+			} else if (msg.what == MV_LOAD_FINISH) {
+				if (MVHelper.isExistMVData(mContext, mv, txt_msg)) {
+					mvAdapter.setData(mv.getList());
+				}
+			}
+			return false;
+		}
+	});
+
+	@Override
+	public void onItemClick(AdapterView<?> parent, View view, int position,
+			long id) {
+		if (parent.getId() == R.id.gv_type) {
+			MVHelper.toMVListActivity(mContext, list.get(position),type);			
+		} else if (parent.getId() == R.id.gv_mv) {	
+			MVHelper.playMV(mContext, position, mvAdapter.getMVPlayInfoList());
+		}
+	}
+	
+	private void refreshAreaView(Message msg) {
+		if (list == null || list.size() == 0) {
+			if (OnlineLogic.isCloseNetwork(mContext)) {
+				txt_msg.setText(mContext.getResources().getString(
+						R.string.network_connection_is_close));
+			} else {
+				txt_msg.setText(mContext.getResources().getString(
+						R.string.data_load_failure));
+			}
+			txt_msg.setVisibility(View.VISIBLE);
+			gv_type.setVisibility(View.GONE);
+			return;
+		}
+		txt_msg.setVisibility(View.GONE);
+		gv_type.setVisibility(View.VISIBLE);
+		adapter.setData(list);
+	}
+
+	
+}

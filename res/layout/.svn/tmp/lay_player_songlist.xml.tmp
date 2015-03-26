@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/_466px_in720p"
+    android:layout_height="@dimen/_666px_in720p"
+    android:background="#222222"
+    android:layout_marginTop="@dimen/_94px_in720p"
+    android:padding="@dimen/_16px_in720p" >
+
+    <TextView
+        style="@style/font_middle_blue"
+        android:layout_width="wrap_content"
+        android:paddingBottom="@dimen/_16px_in720p"
+        android:layout_height="wrap_content"
+        android:text="@string/player_list_title" />
+
+    <TextView
+        android:id="@+id/play_list_number"
+        style="@style/font_middle_blue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:text="@string/player_list_size" />
+
+    <ImageView
+        android:id="@+id/line"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/_2px_in720p"
+        android:layout_below="@+id/play_list_number"
+        android:layout_marginTop="@dimen/_16px_in720p"
+        android:background="@color/blue1" />
+
+    <ListView
+        android:id="@+id/player_listView"
+        style="@style/listview_style1"      
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/line"
+        android:layout_gravity="left|center_vertical"
+         android:divider="#3A3A3A"
+        android:dividerHeight="@dimen/_2px_in720p" 
+        
+    
+        />
+ <!--    android:divider="#3A3A3A"
+        android:dividerHeight="@dimen/_2px_in720p" -->
+</RelativeLayout>

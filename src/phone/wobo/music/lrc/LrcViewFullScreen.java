@@ -1,0 +1,180 @@
+package phone.wobo.music.lrc;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import phone.wobo.music.lrc.TimedTextObject.TimedIndex;
+import phone.wobo.music.model.MusicInfo;
+import phone.wobo.music.util.NetTools;
+import android.os.Handler;
+import android.util.Log;
+
+public class LrcViewFullScreen extends Thread {
+	private static final String TAG = "liangbang";
+	private static int interval = 300;
+	private List<String> mListUrl;
+	private boolean mFinish;
+	private String mText1="";
+	private String mEncode = "UTF-8";
+	MusicInfo info;
+	private Handler mHandler;
+	LyricView lyricView;
+	
+	public List<String>  loadLrcUrl(String source,String songName,String singer){	
+		Log.i(TAG, "	--->LrcViewFullScreen--->loadLrcUrl url= ");
+
+		List<String> list_url = new ArrayList<String>();
+		ExtractLrc extractlrc = new ExtractLrc();
+		if (source == null || source.equals("")){	//本地音乐				
+			list_url = extractlrc.getLrcOfString("search", "", songName, singer);//搜索
+			
+		}else if (source.contains("qqmusic") || source.contains("qq.com")) {
+			String mid = source.substring(
+					source.lastIndexOf("%3D") + 3, source.length());
+			list_url = extractlrc.getLrcOfString(source, mid,
+					removeSpecChar(songName), singer);
+		}
+
+		if (list_url == null || list_url.size() == 0) {// 电台
+												// 是kugou的源，songName包含了歌名和歌手
+			songName = removeSpecChar(songName);
+			int spil = songName.indexOf("-");
+			if (spil > -1) {
+				singer = songName.substring(0, spil).trim();
+				songName = songName.substring(spil + 1).trim();
+				songName = removeSpecChar(songName);
+				singer = removeSpecChar(singer);
+			}
+			list_url = extractlrc.getLrcOfString("search", "", songName, singer);//搜索
+		}
+		return list_url;
+	}
+	public LrcViewFullScreen(MusicInfo info,Handler mHandler,LyricView lyricView) {
+		this.info=info;		
+		mFinish = false;
+		this.mHandler=mHandler;
+		this.lyricView=lyricView;
+	}
+
+	private InputStream getInputStream() {
+		String url="";
+		for (int i = 0; i < mListUrl.size(); i++) {
+			 url=mListUrl.get(i);			
+			try {
+				InputStream is = NetTools.getHttpStream(url, 20);
+				
+				if (is != null) {					
+					if (url.indexOf("http://lrc.aspxp.net/") > -1 ||url.indexOf("http://box.zhangmen.baidu.com") > -1 )
+						mEncode = "GB2312";
+					//Log.d("url显示", url);	
+					Log.d(TAG, "	--->LrcViewFullScreen--->getInputStream url= " + url);
+					Log.d(TAG, "	--->LrcViewFullScreen--->getInputStream InputStream= " + is);
+					return is;
+				}
+			}catch (IOException e) {
+				e.printStackTrace();
+				continue;
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+		}
+		return null;
+	}
+
+	public void run() {
+		Log.i(TAG, "	--->LrcViewFullScreen--->run currentThreadID: " + Thread.currentThread().getId());
+		mListUrl = loadLrcUrl(info.getPluginPath(),info.getName(),info.getArtist());
+		if(mListUrl==null|| mListUrl.size()==0){			
+			/*Lrc lrc=new Lrc();
+			lrc.content="暂无歌词文件";
+			handleSubtitleChange(lrc);*/
+			return;
+		}
+		TimedTextObject timedTextObject;
+		try {
+			InputStream is = getInputStream();
+			if (is == null){
+				/*Lrc lrc=new Lrc();
+				lrc.content="~~~~~~";
+				Lrc lrc2=new Lrc();
+				lrc.content="暂无歌词文件";
+				handleSubtitleChange(lrc, lrc2);*/
+				return;
+			}
+				
+			timedTextObject = FormatLRC.parseFile(is, mEncode);
+			lyricView.setLrcObject(timedTextObject);
+			
+			TimedIndex timedIndex = new TimedIndex(0);
+			while (!mFinish) { 
+				Log.i(TAG, "	--->LrcViewFullScreen--->run !mFinish,lyric isnot finished,continue...");
+				 timedIndex.start = getCurrentPosition();
+					timedIndex.end = timedIndex.start+100;
+					Log.i(TAG, "	--->LrcViewFullScreen--->run--->!mFinish timedIndex.start= " + timedIndex.start);
+					Log.i(TAG, "	--->LrcViewFullScreen--->run--->!mFinish timedIndex.end= " + timedIndex.end);
+
+					Lrc lrc = timedTextObject.getLrc(timedIndex);
+					if(lrc!=null && !mText1.equals(lrc.getTextContent())){
+						mText1=lrc.getTextContent();
+					
+						lyricView.updateIndex(lrc);
+						handleSubtitleChange();
+					}		          
+		            try  {
+		            	  Thread.sleep(interval);  
+		            } catch  (InterruptedException e) {  
+		                e.printStackTrace();  
+		            }  
+			}
+
+			is.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return;
+		}
+	}
+	
+	public void finish() {
+		this.mFinish = true;
+	}
+
+	public void handleSubtitleChange() {
+//		Log.i(TAG, "	LrcViewFullScreen mHandlerHashCode= " + mHandler.hashCode());
+		mHandler.post(new Runnable() {
+			public void run() {
+				lyricView.update();
+				Log.i(TAG, "	--->LrcViewFullScreen--->handleSubtitleChange mHandler.post currentThreadID: " 
+						+ Thread.currentThread().getId());
+			}
+		});
+	}
+	public Lrc createDefaultLrc(String content){
+		return createLrc(content,0,0);
+	}
+	
+	public Lrc createLrc(String content, int timeStart, int timeEnd) {
+		Lrc lrc = new Lrc();
+		lrc.start = new Time(timeStart);
+		lrc.end = new Time(timeEnd);
+		lrc.content = content;
+		return lrc;
+	}
+	public int getCurrentPosition() {//此方法已在MusicPlayActivity中重写
+		Log.i(TAG, "	--->LrcViewFullScreen--->getCurrentPosition");
+		return 0;
+	}
+	private String removeSpecChar(String str) {
+		Matcher match = Pattern.compile("\\(.*?\\)").matcher(str);
+		str = match.replaceAll("");
+		match = Pattern.compile("【.*?】").matcher(str);
+		str = match.replaceAll("");
+		return str;
+	}
+	
+	
+}
